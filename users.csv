@@ -1,0 +1,4 @@
+email,first_name,last_name,password,role
+tenant1@example.com,Alex,Tenant,pass123,tenant
+tenant2@example.com,Olga,Tenant,pass123,tenant
+landlord1@example.com,Max,Owner,pass123,landlord
