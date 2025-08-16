@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>Каталог аренды — пользователи</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{% static 'users.css' %}" rel="stylesheet" />
+  <link rel="icon" href="{% static 'favicon.ico' %}">
+</head>
+<body>
+  <header class="container header">
+    <div class="brand">
+      <h1 data-i18n="title">🏠 Аренда жилья — каталог</h1>
+      <p class="muted" data-i18n="subtitle">Смотрите доступные объекты с фото, ценой и рейтингом</p>
+    </div>
+
+    <div class="header-actions">
+      <form id="langForm" action="/i18n/setlang/" method="post" class="lang-switcher">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path|default:'/' }}" />
+        <select name="language" id="languageSelect">
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="en">🇬🇧 English</option>
+        </select>
+      </form>
+
+      <button id="themeBtn" class="button outline" type="button">🎨 Тема</button>
+    </div>
+  </header>
+
+  <section class="container searchbar">
+    <form id="searchForm" onsubmit="return false;">
+      <input type="search" id="q" placeholder="Город, район или адрес" data-i18n-placeholder="search_placeholder" />
+      <input type="number" id="minPrice" min="0" step="50" placeholder="Мин. цена" data-i18n-placeholder="min_price" />
+      <input type="number" id="maxPrice" min="0" step="50" placeholder="Макс. цена" data-i18n-placeholder="max_price" />
+      <select id="rooms">
+        <option value="" data-i18n="rooms_any">Комнат</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option>
+      </select>
+      <button class="button primary" id="applySearch" type="button" data-i18n="find">Найти</button>
+      <button class="button outline" id="resetSearch" type="button" data-i18n="reset">Сброс</button>
+    </form>
+  </section>
+
+  <main class="container">
+    <div class="grid" id="cards">
+      {% for p in properties %}
+      <article class="card"
+               data-city="{{ p.city|default:'' }}"
+               data-district="{{ p.district|default:'' }}"
+               data-address="{{ p.address|default:'' }}"
+               data-price="{{ p.price|default:0 }}"
+               data-rooms="{{ p.rooms|default:0 }}">
+
+        <a class="thumb" href="{% url 'property_detail' p.pk %}" aria-label="{{ p.title }}">
+          {% with first=p.images.first %}
+            {% if first and first.image %}
+              <img src="{{ first.image.url }}" alt="{{ first.alt|default:p.title }}" loading="lazy">
+            {% else %}
+              <div class="placeholder">Нет фото</div>
+            {% endif %}
+          {% endwith %}
+          {% if p.get_property_type_display %}
+            <div class="badge">{{ p.get_property_type_display }}</div>
+          {% endif %}
+        </a>
+
+        <div class="card-body">
+          <h3 class="title" title="{{ p.title }}">
+            <a href="{% url 'property_detail' p.pk %}">{{ p.title|default:"Объявление"|truncatechars:60 }}</a>
+          </h3>
+          <p class="sub">
+            {% if p.city %}{{ p.city }}{% if p.district %}, {{ p.district }}{% endif %}{% endif %}
+          </p>
+
+          <div class="meta">
+            <span class="price">
+              {% if p.price %}€ {{ p.price }}{% else %}<span data-i18n="price_on_request">Цена по запросу</span>{% endif %}
+            </span>
+            {% if p.rooms %}<span class="rooms">{{ p.rooms }} <span data-i18n="rooms_suffix">комн.</span></span>{% endif %}
+            {% if p.area %}<span class="area">{{ p.area }} м²</span>{% endif %}
+          </div>
+
+          <div class="rating">⭐ {{ p.rating_avg|default_if_none:"—" }} ({{ p.reviews_total|default:"0" }})</div>
+
+          <div class="actions">
+            <a class="button" href="{% url 'property_detail' p.pk %}" data-i18n="open">Открыть</a>
+            <a class="button outline" href="{% url 'property_detail' p.pk %}" data-i18n="preview">Просмотреть</a>
+            <form action="{% url 'property_book_now' p.pk %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button class="button primary" type="submit" data-i18n="checkin">Заселиться</button>
+            </form>
+          </div>
+        </div>
+      </article>
+      {% empty %}
+        <p data-i18n="empty">Пока нет активных объявлений.</p>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer class="container muted">
+    <p><span data-i18n="public_note">Публичная страница для пользователей. Медиа берутся из</span> {{ MEDIA_URL }}.</p>
+  </footer>
+
+  <script>
+    const dict = {
+      ru: {
+        title: "🏠 Аренда жилья — каталог",
+        subtitle: "Смотрите доступные объекты с фото, ценой и рейтингом",
+        search_placeholder: "Город, район или адрес",
+        min_price: "Мин. цена",
+        max_price: "Макс. цена",
+        rooms_any: "Комнат",
+        find: "Найти",
+        reset: "Сброс",
+        price_on_request: "Цена по запросу",
+        rooms_suffix: "комн.",
+        open: "Открыть",
+        preview: "Просмотреть",
+        checkin: "Заселиться",
+        empty: "Пока нет активных объявлений.",
+        public_note: "Публичная страница для пользователей. Медиа берутся из"
+      },
+      de: {
+        title: "🏠 Mietkatalog — Wohnungen & Häuser",
+        subtitle: "Sehen Sie verfügbare Objekte mit Fotos, Preis und Bewertung",
+        search_placeholder: "Stadt, Bezirk oder Adresse",
+        min_price: "Min. Preis",
+        max_price: "Max. Preis",
+        rooms_any: "Zimmer",
+        find: "Suchen",
+        reset: "Zurücksetzen",
+        price_on_request: "Preis auf Anfrage",
+        rooms_suffix: "Zi.",
+        open: "Öffnen",
+        preview: "Ansehen",
+        checkin: "Einziehen",
+        empty: "Noch keine aktiven Inserate.",
+        public_note: "Öffentliche Seite für Nutzer. Medien von"
+      },
+      en: {
+        title: "🏠 Rentals Catalog",
+        subtitle: "Browse available listings with photos, price and rating",
+        search_placeholder: "City, district or address",
+        min_price: "Min price",
+        max_price: "Max price",
+        rooms_any: "Rooms",
+        find: "Search",
+        reset: "Reset",
+        price_on_request: "Price on request",
+        rooms_suffix: "rm.",
+        open: "Open",
+        preview: "Preview",
+        checkin: "Check in",
+        empty: "No active listings yet.",
+        public_note: "Public page for users. Media from"
+      }
+    };
+
+    function applyLang(lang){
+      const d = dict[lang] || dict.ru;
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const k = el.getAttribute("data-i18n");
+        if(d[k] !== undefined){ el.textContent = d[k]; }
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+        const k = el.getAttribute("data-i18n-placeholder");
+        if(d[k] !== undefined){ el.setAttribute("placeholder", d[k]); }
+      });
+      localStorage.setItem("ui_lang", lang);
+    }
+
+    const themeOrder = ["light","dark","emerald","royal"];
+    function applyTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("ui_theme", theme);
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const savedLang = localStorage.getItem("ui_lang") || "ru";
+      const select = document.getElementById("languageSelect");
+      select.value = savedLang;
+      applyLang(savedLang);
+      select.addEventListener("change", ()=>{ document.getElementById("langForm").submit(); });
+
+      const savedTheme = localStorage.getItem("ui_theme") || "light";
+      applyTheme(savedTheme);
+      document.getElementById("themeBtn").addEventListener("click", ()=>{
+        const cur = document.documentElement.getAttribute("data-theme") || "light";
+        const idx = themeOrder.indexOf(cur);
+        const next = themeOrder[(idx+1)%themeOrder.length];
+        applyTheme(next);
+      });
+
+      const cards = Array.from(document.querySelectorAll('#cards .card'));
+      function norm(s){ return (s||'').toString().toLowerCase(); }
+      function applyFilters(){
+        const q = norm(document.getElementById('q').value);
+        const min = parseInt(document.getElementById('minPrice').value||'0',10);
+        const max = parseInt(document.getElementById('maxPrice').value||'0',10);
+        const rooms = document.getElementById('rooms').value;
+        cards.forEach(card=>{
+          const city = norm(card.dataset.city);
+          const district = norm(card.dataset.district);
+          const address = norm(card.dataset.address);
+          const price = parseInt(card.dataset.price||'0',10);
+          const r = card.dataset.rooms || '';
+          let ok = true;
+          if(q){ ok = (city.includes(q) || district.includes(q) || address.includes(q)); }
+          if(ok && min){ ok = price>=min; }
+          if(ok && max){ ok = price<=max; }
+          if(ok && rooms){
+            if(rooms==='5+') ok = parseInt(r||'0',10) >= 5;
+            else ok = (r === rooms);
+          }
+          card.style.display = ok ? '' : 'none';
+        });
+      }
+      document.getElementById('applySearch').addEventListener('click', applyFilters);
+      document.getElementById('resetSearch').addEventListener('click', ()=>{
+        document.getElementById('q').value='';
+        document.getElementById('minPrice').value='';
+        document.getElementById('maxPrice').value='';
+        document.getElementById('rooms').value='';
+        cards.forEach(c=>c.style.display='');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <body style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;">
+    <h2>Новый запрос по объекту</h2>
+    <p><strong>Объект:</strong> {{ property.title }} (ID {{ property.id }})</p>
+    <p><strong>От:</strong> {{ name }} &lt;{{ email }}&gt;</p>
+    {% if phone %}
+    <p><strong>Телефон:</strong> {{ phone }}</p>
+    {% endif %}
+    <p><strong>Сообщение:</strong></p>
+    <p>{{ message|linebreaksbr }}</p>
+  </body>
+</html>

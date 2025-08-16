@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Мои бронирования{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 1rem;">Мои бронирования</h1>
+{% if bookings %}
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:.5rem;">Объект</th>
+      <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:.5rem;">Даты</th>
+      <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:.5rem;">Статус</th>
+      <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:.5rem;">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for b in bookings %}
+    <tr>
+      <td style="padding:.5rem;">
+        <a href="{% url 'property_detail' b.property_id %}">{{ b.property.title }}</a>
+      </td>
+      <td style="padding:.5rem;">{{ b.start_date }} — {{ b.end_date }}</td>
+      <td style="padding:.5rem;">{{ b.status }}</td>
+      <td style="padding:.5rem; display:flex; gap:.5rem;">
+        {% if b.status != 'CANCELLED' and b.status != 'COMPLETED' %}
+          <a href="{% url 'booking_edit' b.id %}" style="padding:.35rem .7rem; border-radius:6px; background:#2563eb; color:#fff; text-decoration:none;">Изменить</a>
+          <button class="btn-cancel" data-id="{{ b.id }}" style="padding:.35rem .7rem; border:none; border-radius:6px; background:#ef4444; color:#fff;">Отменить</button>
+        {% else %}
+          —
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <div style="color:#666;">Пока нет броней.</div>
+{% endif %}
+<script>
+(function(){
+  function getCookie(name){
+    const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+    return m?m.pop():'';
+  }
+  document.querySelectorAll('.btn-cancel').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm('Точно отменить бронь?')) return;
+      btn.disabled=true;
+      const id=btn.getAttribute('data-id');
+      try{
+        const r=await fetch(`/api/bookings/${id}/cancel/`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+          credentials:'same-origin'
+        });
+        const j=await r.json().catch(()=>({}));
+        if(r.ok){ location.reload(); }
+        else { alert(j.detail || 'Не удалось отменить'); }
+      }finally{
+        btn.disabled=false;
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}

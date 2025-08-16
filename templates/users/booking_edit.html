@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Управление бронью{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 1rem;">Управление бронью</h1>
+<div style="border:1px solid #e5e7eb; border-radius:10px; padding:1rem; background:#fff; max-width:640px;">
+  <div style="margin-bottom:1rem;">
+    <div style="font-weight:600;">{{ booking.property.title }}</div>
+    <div style="color:#6b7280;">Текущие даты: {{ booking.start_date }} — {{ booking.end_date }}</div>
+  </div>
+  {% if error %}
+    <div style="margin-bottom:1rem; color:#991b1b; background:#fee2e2; border:1px solid #fecaca; padding:.6rem; border-radius:8px;">
+      {{ error }}
+    </div>
+  {% endif %}
+  <form method="post" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.75rem; align-items:end;">
+    {% csrf_token %}
+    <div>
+      <label for="start_date" style="display:block; font-size:.9rem; color:#555;">Дата заезда</label>
+      <input id="start_date" name="start_date" type="date" value="{{ booking.start_date|date:'Y-m-d' }}" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+    </div>
+    <div>
+      <label for="end_date" style="display:block; font-size:.9rem; color:#555;">Дата выезда</label>
+      <input id="end_date" name="end_date" type="date" value="{{ booking.end_date|date:'Y-m-d' }}" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+    </div>
+    <div>
+      <button type="submit" style="padding:.6rem 1rem; background:#2563eb; color:#fff; border-radius:6px; border:none;">Сохранить</button>
+    </div>
+  </form>
+  <hr style="margin:1rem 0;">
+  <div>
+    <button id="btn-cancel" style="padding:.6rem 1rem; background:#ef4444; color:#fff; border-radius:6px; border:none;">Отменить бронь</button>
+  </div>
+</div>
+<script>
+(function(){
+  function getCookie(name){
+    const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+    return m?m.pop():'';
+  }
+  const btn=document.getElementById('btn-cancel');
+  btn.addEventListener('click', async ()=>{
+    if(!confirm('Точно отменить бронь?')) return;
+    btn.disabled=true;
+    try{
+      const r=await fetch('/api/bookings/{{ booking.id }}/cancel/',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+        credentials:'same-origin'
+      });
+      const j=await r.json().catch(()=>({}));
+      if(r.ok){ window.location.href = '{% url "my_bookings" %}'; }
+      else { alert(j.detail || 'Не удалось отменить'); }
+    }finally{
+      btn.disabled=false;
+    }
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Аренда жилья — каталог"
+msgstr "Rentals Catalog"
+
+msgid "Каталог недвижимости"
+msgstr "Property Catalog"
+
+msgid "Нет фото"
+msgstr "No photos"
+
+msgid "Подробнее"
+msgstr "Details"
+
+msgid "Нет объявлений"
+msgstr "No listings"
+
+msgid "Заселиться"
+msgstr "Check in"
+
+msgid "Отзывы"
+msgstr "Reviews"
+
+msgid "Пока нет отзывов."
+msgstr "No reviews yet."
+
+msgid "Рейтинг (1–5):"
+msgstr "Rating (1–5):"
+
+msgid "5 — отлично"
+msgstr "5 — excellent"
+
+msgid "4 — хорошо"
+msgstr "4 — good"
+
+msgid "3 — нормально"
+msgstr "3 — okay"
+
+msgid "2 — плохо"
+msgstr "2 — poor"
+
+msgid "1 — ужасно"
+msgstr "1 — terrible"
+
+msgid "Комментарий:"
+msgstr "Comment:"
+
+msgid "Отправить отзыв"
+msgstr "Submit review"

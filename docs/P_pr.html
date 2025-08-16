@@ -1,0 +1,469 @@
+# Build a compact "cheatsheet" presentation (HTML) tailored to the user's project.
+cheat = r"""<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шпаргалка по проекту — Александр Сакилев</title>
+<style>
+  :root{
+    --bg:#0b1020; --fg:#e5e7eb; --muted:#9ca3af;
+    --border:#1f2937; --primary:#60a5fa; --accent:#34d399; --violet:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0; color:var(--fg); background:radial-gradient(1200px 800px at 10% 0%, #111827 0%, rgba(17,24,39,0) 60%), var(--bg);
+       font:500 17px/1.55 "Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;}
+  .slides{height:100vh; position:relative; overflow:hidden}
+  section{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:56px clamp(18px,4.6vw,56px);
+          opacity:0; transform:translateX(20px) scale(.994); transition:.45s; pointer-events:none;}
+  section.active{opacity:1; transform:none; pointer-events:auto}
+  .wrap{width:min(1100px,94vw); border:1px solid var(--border); border-radius:20px; padding:clamp(18px,3.4vw,38px);
+        background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)); backdrop-filter: blur(6px);
+        box-shadow:0 24px 80px rgba(0,0,0,.45);}
+  h1,h2,h3{margin:0 0 .6rem; line-height:1.15}
+  h1{font-size: clamp(30px, 5vw, 48px)}
+  h2{font-size: clamp(22px, 3vw, 32px)}
+  h3{font-size: clamp(18px, 2.4vw, 24px)}
+  p.lead{opacity:.95; font-size: clamp(17px, 2.2vw, 20px); margin-bottom:.9rem}
+  ul{margin:.4rem 0 0 1.2rem; padding:0}
+  li{margin:.25rem 0}
+  .grid{display:grid; gap:clamp(10px,2vw,16px); grid-template-columns: repeat(auto-fit, minmax(260px,1fr));}
+  .card{background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:14px; padding:14px}
+  .muted{color:var(--muted)}
+  .kbd{display:inline-block; border:1px solid var(--border); background:#0a1022; padding:.1rem .45rem; border-radius:6px; font-size:.86em; color:#cbd5e1}
+  .chip{display:inline-block; padding:.25rem .6rem; border-radius:999px; border:1px solid var(--border); margin:.2rem .3rem 0 0; background:rgba(255,255,255,.03)}
+  pre{background:#0a1022; border:1px solid var(--border); border-radius:12px; padding:10px; overflow:auto; font-size:.92em}
+  code{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+  .progress{position:fixed; left:0; bottom:0; height:6px; background:linear-gradient(90deg, var(--accent), var(--primary), var(--violet)); width:0; transition:.2s; z-index:9}
+  .help{position:fixed; right:12px; bottom:10px; color:#9ca3af; font-size:.9rem}
+  .wm{position:fixed; left:12px; bottom:10px; opacity:.3; font-weight:800; font-size:.92rem}
+</style>
+</head>
+<body>
+
+<div class="slides">
+
+  <!-- 1. Cover -->
+  <section class="active" data-title="Шпаргалка">
+    <div class="wrap">
+      <h1>Шпаргалка по проекту</h1>
+      <p class="lead">Александр Сакилев · Django + DRF + MySQL · Rentals Backend</p>
+      <div>
+        <span class="chip">JWT</span><span class="chip">Docker</span><span class="chip">SMTP</span><span class="chip">i18n RU/DE/EN</span>
+      </div>
+      <p class="muted" style="margin-top:.8rem">Листай <span class="kbd">←</span> <span class="kbd">→</span> · Печать/ PDF: <span class="kbd">Ctrl/Cmd+P</span></p>
+    </div>
+  </section>
+
+  <!-- 2. Tree -->
+  <section data-title="Структура проекта">
+    <div class="wrap">
+      <h2>Дерево и назначение</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Корень</h3>
+          <ul>
+            <li><code>manage.py</code> — команды Django</li>
+            <li><code>.env</code>, <code>.env.local</code> — секреты/конфиг</li>
+            <li><code>requirements.txt</code> — зависимости</li>
+            <li><code>Dockerfile</code>, <code>docker-compose.yml</code> — контейнеры</li>
+            <li><code>media/</code> — загружаемые файлы</li>
+            <li><code>static/</code> — стили/картинки фронта</li>
+            <li><code>locale/</code> — переводы</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Проект: <code>core/</code></h3>
+          <ul>
+            <li><code>settings.py</code> — БД, DRF, EMAIL, i18n</li>
+            <li><code>urls.py</code> — все маршруты</li>
+            <li><code>wsgi.py</code>, <code>asgi.py</code> — серверы</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Приложения: <code>src/*</code></h3>
+          <ul>
+            <li><code>accounts</code> — регистр., JWT, профиль</li>
+            <li><code>properties</code> — объекты, API, контакт</li>
+            <li><code>bookings</code> — брони, отмена, письма</li>
+            <li><code>reviews</code> — отзывы/рейтинги</li>
+            <li><code>analytics</code> — поиски/просмотры</li>
+            <li><code>shared</code> — enums, пагинация, css</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Шаблоны</h3>
+          <ul>
+            <li><code>base.html</code> — каркас, язык/тема</li>
+            <li><code>properties/*.html</code> — главная/карточка</li>
+            <li><code>users/*.html</code> — регистрация, брони</li>
+            <li><code>emails/*.html|.txt</code> — письма</li>
+            <li><code>admin/*</code> — кастом админки</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. URLs -->
+  <section data-title="Маршруты">
+    <div class="wrap">
+      <h2>Основные маршруты</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Страницы</h3>
+          <ul>
+            <li><code>/</code> — каталог</li>
+            <li><code>/properties/&lt;id&gt;/</code> — объект</li>
+            <li><code>/register/</code> — регистрация</li>
+            <li><code>/my-bookings/</code> — мои брони</li>
+            <li><code>/bookings/&lt;id&gt;/edit/</code> — управление бронью</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>API</h3>
+          <ul>
+            <li><code>/api/accounts/register/</code></li>
+            <li><code>/api/accounts/token/</code> + <code>/token/refresh/</code></li>
+            <li><code>/api/accounts/me/</code></li>
+            <li><code>/api/properties/</code> (+ фильтры/поиск/сортировка)</li>
+            <li><code>/api/properties/&lt;id&gt;/contact/</code></li>
+            <li><code>/api/bookings/&lt;id&gt;/cancel/</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>i18n</h3>
+          <ul>
+            <li><code>/i18n/</code> — переключение языка</li>
+            <li>RU/DE/EN, <code>LocaleMiddleware</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Flows -->
+  <section data-title="Потоки действий">
+    <div class="wrap">
+      <h2>Пользовательские сценарии</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Регистрация/вход</h3>
+          <ol>
+            <li><code>/register/</code> → POST <code>/api/accounts/register/</code></li>
+            <li>Авторизация: <code>/api/accounts/token/</code> (JWT)</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Бронирование</h3>
+          <ol>
+            <li>На карточке: форма → <code>book_now</code></li>
+            <li>Проверка пересечений дат, статус</li>
+            <li>Письмо владельцу</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Управление бронью</h3>
+          <ol>
+            <li><code>/bookings/&lt;id&gt;/edit/</code> — изменить даты</li>
+            <li>Отмена: POST <code>/api/bookings/&lt;id&gt;/cancel/</code></li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Контакт без регистрации</h3>
+          <ol>
+            <li>Модалка → POST <code>/api/properties/&lt;id&gt;/contact/</code></li>
+            <li><code>reply_to</code> — e-mail клиента</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Команды -->
+  <section data-title="Команды">
+    <div class="wrap">
+      <h2>Частые команды</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Быстрый старт</h3>
+<pre><code>python -m venv .venv
+.venv\Scripts\activate   # Windows
+pip install -r requirements.txt
+copy .env.example .env
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver</code></pre>
+        </div>
+        <div class="card">
+          <h3>Миграции</h3>
+<pre><code>python manage.py makemigrations
+python manage.py migrate
+python manage.py showmigrations
+python manage.py sqlmigrate app 0001</code></pre>
+          <p class="muted">Ошибка <code>E160</code> — убери конфликт <code>auto_now/auto_now_add/default</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Docker</h3>
+<pre><code>docker compose up --build
+docker compose logs -f
+docker system prune -f
+</code></pre>
+          <p class="muted">Смотри <code>.dockerignore</code>, храни медиа в volume.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. SMTP -->
+  <section data-title="SMTP и почта">
+    <div class="wrap">
+      <h2>SMTP (Gmail) — настройки и фишки</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>.env</h3>
+<pre><code>EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=true
+EMAIL_HOST_USER=you@gmail.com
+EMAIL_HOST_PASSWORD=&lt;app_password&gt;
+DEFAULT_FROM_EMAIL=you@gmail.com</code></pre>
+          <p class="muted">Пароль — 16-симв. app password (2FA включена).</p>
+        </div>
+        <div class="card">
+          <h3>Типичные ошибки</h3>
+          <ul>
+            <li><code>535 BadCredentials</code> — проверь app password, почту</li>
+            <li><code>UnicodeEncodeError</code> — неиспользуй кириллицу в пароле</li>
+            <li>DEV: <code>console.EmailBackend</code> для отладки</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Отправка писем</h3>
+          <ul>
+            <li><code>EmailMultiAlternatives</code> (plain + HTML)</li>
+            <li><code>reply_to</code> для писем от гостей</li>
+            <li>Шаблоны: <code>templates/emails/*</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Фильтры/поиск -->
+  <section data-title="Фильтры и поиск">
+    <div class="wrap">
+      <h2>DRF: фильтры, поиск, сортировка</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Настройки</h3>
+          <ul>
+            <li><code>DEFAULT_FILTER_BACKENDS</code>: <code>DjangoFilterBackend</code>, <code>SearchFilter</code>, <code>OrderingFilter</code></li>
+            <li><code>search_fields</code>: <code>title, description, city, district</code></li>
+            <li><code>ordering_fields</code>: <code>price, created_at, rating_avg, reviews_total, id</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Примеры запросов</h3>
+<pre><code>/api/properties/?search=Berlin&amp;ordering=-price
+/api/properties/?price_min=500&amp;price_max=1200
+/api/properties/?city=Munich&amp;rooms_min=2</code></pre>
+        </div>
+        <div class="card">
+          <h3>Оптимизация ORM</h3>
+          <ul>
+            <li><code>annotate(Avg, Count)</code> для рейтинга/отзывов</li>
+            <li><code>select_related('owner')</code>, <code>Prefetch('images')</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Брони/статусы -->
+  <section data-title="Брони и статусы">
+    <div class="wrap">
+      <h2>Бронирования и статусы</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Пересечение дат</h3>
+<pre><code>overlap = (start_a &lt;= end_b) and (end_a &gt;= start_b)
+Booking.objects.filter(
+  property=prop,
+  start_date__lte=end_date,
+  end_date__gte=start_date,
+  status__in=[PENDING, CONFIRMED, ACTIVE]
+)</code></pre>
+        </div>
+        <div class="card">
+          <h3>Безопасный выбор статуса</h3>
+<pre><code>def _choose_status(*names, fallback="PENDING"):
+    for n in names:
+        v = getattr(BookingStatus, n, None)
+        v = getattr(v, "value", None)
+        if v: return v
+    return getattr(BookingStatus, fallback, fallback)</code></pre>
+        </div>
+        <div class="card">
+          <h3>Отмена и админка</h3>
+          <ul>
+            <li>Клиент: <code>/api/bookings/&lt;id&gt;/cancel/</code></li>
+            <li>Admin actions: «Отменить», «Отправить e-mail»</li>
+            <li>Логи: <code>cancelled_at</code>, <code>cancelled_by</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. i18n -->
+  <section data-title="Переводы">
+    <div class="wrap">
+      <h2>i18n RU/DE/EN</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Структура</h3>
+          <ul>
+            <li><code>locale/ru|de|en/LC_MESSAGES/django.po|.mo</code></li>
+            <li><code>{% trans %}</code> в шаблонах</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Команды</h3>
+<pre><code>django-admin makemessages -l de -l en
+django-admin compilemessages</code></pre>
+        </div>
+        <div class="card">
+          <h3>Полезно</h3>
+          <ul>
+            <li><code>LocaleMiddleware</code> + форма смены языка</li>
+            <li>Часовой пояс: <code>Europe/Berlin</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Git/GitHub -->
+  <section data-title="Git и GitHub">
+    <div class="wrap">
+      <h2>Заливка в GitHub</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>.gitignore</h3>
+<pre><code>.venv/
+.env
+.env.local
+media/
+*.sqlite3
+.idea/
+seed_images/</code></pre>
+        </div>
+        <div class="card">
+          <h3>Шаги</h3>
+<pre><code>git init &amp;&amp; git branch -m main
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/&lt;you&gt;/rentals_backend.git
+git push -u origin main</code></pre>
+        </div>
+        <div class="card">
+          <h3>.env.example</h3>
+          <p class="muted">Хранить рядом, без секретов — удобно новичкам/ревьюерам.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Прод и AWS -->
+  <section data-title="Деплой на AWS">
+    <div class="wrap">
+      <h2>Прод: AWS EC2 (эскиз)</h2>
+      <ul>
+        <li>EC2 Ubuntu, docker + docker-compose</li>
+        <li>Окружение из <code>.env</code>, секреты в переменных</li>
+        <li>Nginx reverse-proxy + HTTPS (Let's Encrypt)</li>
+        <li>Бэкапы БД, медиа в S3</li>
+        <li>Мониторинг логов (CloudWatch)</li>
+      </ul>
+      <p class="muted">При старте контейнера: миграции, collectstatic, healthcheck.</p>
+    </div>
+  </section>
+
+  <!-- 12. FAQ -->
+  <section data-title="FAQ / Troubleshooting">
+    <div class="wrap">
+      <h2>FAQ / Troubleshooting</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>NoReverseMatch</h3>
+          <ul>
+            <li>Проверь имя роута/namespace</li>
+            <li>Добавь недостающий шаблон/маршрут</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>TemplateDoesNotExist</h3>
+          <ul>
+            <li>Проверь <code>TEMPLATES['DIRS']</code></li>
+            <li>Путь: <code>templates/emails/...</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>CSS «Unknown unit»</h3>
+          <ul>
+            <li>Кириллица в единицах: <code>рем</code> → <code>rem</code></li>
+            <li>HEX-цвет: <code>#991b1b</code> (без кириллицы)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Docker очистка</h3>
+<pre><code>docker system prune -f
+docker volume ls
+docker volume rm &lt;name&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="help">Листай: <span class="kbd">←</span> <span class="kbd">→</span> · Печать: <span class="kbd">Ctrl/Cmd+P</span></div>
+<div class="wm">Александр Сакилев · Cheatsheet</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('section')];
+  let i=0;
+  function show(k){
+    i=(k+slides.length)%slides.length;
+    slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+    document.getElementById('progress').style.width=((i+1)/slides.length*100)+'%';
+    document.title = (slides[i].dataset.title? slides[i].dataset.title + " — " : "") + "Шпаргалка по проекту";
+  }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown') show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') show(i-1);
+  });
+  let startX=null;
+  document.addEventListener('touchstart', e=>{ startX=e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    if(startX===null) return;
+    const dx=e.changedTouches[0].clientX-startX;
+    if(Math.abs(dx)>40) show(i+(dx<0?1:-1));
+    startX=null;
+  }, {passive:true});
+  show(0);
+})();
+</script>
+
+</body>
+</html>
+"""
+path = "/mnt/data/rentals_cheatsheet.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(cheat)
+
+path

@@ -1,0 +1,8 @@
+Просрочено бронирование
+Бронь № {{ booking.id }} по объекту «{{ booking.property.title }}» просрочена.
+Даты: {{ booking.start_date }} — {{ booking.end_date }}
+Пожалуйста, свяжитесь с другой стороной для урегулирования.
+Отмена бронирования
+Бронь № {{ booking.id }} по объекту «{{ booking.property.title }}» отменена.
+Даты: {{ booking.start_date }} — {{ booking.end_date }}
+Инициатор: {{ actor }}

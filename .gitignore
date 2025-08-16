@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+
+# Django
+*.sqlite3
+db.sqlite3
+identifier.sqlite
+media/
+!media/.gitkeep
+staticfiles/
+.env
+.env.local
+
+# Logs / misc
+*.log
+*.pid
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Docker
+docker-data/

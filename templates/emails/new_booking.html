@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <body style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;">
+    <h2>Новая бронь</h2>
+    <p><strong>Объект:</strong> {{ property.title }}</p>
+    <p><strong>Даты:</strong> {{ start_date }} — {{ end_date }}</p>
+    <p><strong>Клиент:</strong> {{ tenant.get_username }}{% if tenant.email %} &lt;{{ tenant.email }}&gt;{% endif %}</p>
+    <p>Проверьте бронирование в системе.</p>
+  </body>
+</html>

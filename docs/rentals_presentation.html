@@ -1,0 +1,375 @@
+# Generate v3 of the presentation with two new slides: "Трудности и решения" and "Методы и библиотеки".
+base = r"""<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Система аренды жилья — презентация</title>
+<style>
+  :root{
+    --bg: #0b1020;
+    --bg2:#0c1329;
+    --card: #0f172a;
+    --fg: #e5e7eb;
+    --muted: #94a3b8;
+    --primary: #60a5fa;
+    --accent: #34d399;
+    --accent2:#a78bfa;
+    --danger: #f87171;
+    --border: #1f2937;
+    --shadow: 0 30px 100px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    color:var(--fg);
+    font: 500 18px/1.55 "Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 800px at 10% 0%, #1f2937 0%, rgba(31,41,55,0) 60%) , var(--bg);
+  }
+  .orbs{position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; filter: blur(40px) saturate(140%);}
+  .orb{position:absolute; width:420px; height:420px; border-radius:50%; opacity:.35;}
+  .orb.a{background:#3b82f6; left:-120px; top:-80px; animation: floatA 12s ease-in-out infinite;}
+  .orb.b{background:#22c55e; right:-140px; top:-60px; animation: floatB 14s ease-in-out infinite;}
+  .orb.c{background:#a78bfa; left:20%; bottom:-160px; width:520px; height:520px; animation: floatC 16s ease-in-out infinite;}
+  @keyframes floatA{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(30px)}}
+  @keyframes floatB{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-40px)}}
+  @keyframes floatC{ 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px, -20px)}}
+  .slides{height:100vh; overflow:hidden; position:relative;}
+  section.slide{width:100%; height:100%; padding:60px clamp(20px,5vw,64px); display:flex; align-items:center; justify-content:center; position:absolute; inset:0; opacity:0; transform:translateX(20px) scale(.995); transition:opacity .45s, transform .45s;}
+  section.slide.active{opacity:1; transform:none; pointer-events:auto}
+  .wrap{width:min(1100px, 94vw); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)); border:1px solid var(--border); border-radius:22px; padding:clamp(20px,3.6vw,44px); box-shadow: var(--shadow); backdrop-filter: blur(8px);}
+  h1,h2,h3{margin:0 0 .6rem; line-height:1.15}
+  h1{font-size: clamp(34px, 5.4vw, 56px); letter-spacing:.2px}
+  h2{font-size: clamp(24px, 3.6vw, 36px); color:#fff}
+  h3{font-size: clamp(20px, 2.8vw, 28px); color:#fff}
+  p.lead{color:var(--fg); opacity:.9; font-size: clamp(18px, 2.2vw, 22px); margin-bottom:1rem}
+  ul{margin:.6rem 0 0 1.2rem; padding:0}
+  li{margin:.25rem 0}
+  .tag{display:inline-block; padding:.35rem .7rem; border:1px solid var(--border); border-radius:999px; margin:.15rem .35rem .1rem 0; color:#cbd5e1; background:rgba(255,255,255,.03)}
+  .row{display:grid; gap:clamp(12px, 2vw, 20px); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top:.6rem}
+  .card{background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:16px; padding:18px}
+  .muted{color:var(--muted)}
+  .ok{color:var(--accent)} .bad{color:var(--danger)}
+  .btns{display:flex; gap:.6rem; flex-wrap:wrap; margin-top:.9rem}
+  .btn{display:inline-block; padding:.7rem 1.05rem; background:linear-gradient(135deg, var(--accent), var(--primary)); color:#0b1220; border-radius:12px; text-decoration:none; font-weight:800}
+  .btn.secondary{background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:700}
+  .kbd{display:inline-block; border:1px solid var(--border); background:#0b1220; padding:.1rem .4rem; border-radius:6px; font-size:.85em; color:#cbd5e1}
+  .progress{position:fixed; left:0; bottom:0; height:6px; width:0; background:linear-gradient(90deg, var(--accent), var(--primary), var(--accent2)); transition:width .2s; z-index:50}
+  .navhint{position:fixed; right:16px; bottom:12px; color:#9ca3af; font-size:.9rem; z-index:60; user-select:none}
+  .watermark{position:fixed; left:16px; bottom:12px; opacity:.28; font-weight:800; letter-spacing:.8px; font-size:.9rem}
+  .cols{display:grid; grid-template-columns: 1.2fr .8fr; gap:clamp(12px, 1.8vw, 24px)}
+  @media (max-width: 900px){ .cols{grid-template-columns: 1fr} }
+  .intro{display:grid; grid-template-columns: 1fr 1fr; gap:clamp(16px,2vw,24px); align-items:center;}
+  .avatar{width:min(360px, 80%); aspect-ratio:1/1; border-radius:24px; background:radial-gradient(80% 80% at 20% 10%, rgba(96,165,250,.35), transparent 60%), radial-gradient(80% 80% at 80% 10%, rgba(52,211,153,.35), transparent 60%), linear-gradient(145deg, #0e172d, #0a1022); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; font-weight:900; font-size: clamp(22px, 3.5vw, 36px); color:#a5b4fc; letter-spacing:.5px;}
+  @media (max-width: 900px){ .intro{grid-template-columns:1fr} .avatar{width:100%} }
+</style>
+</head>
+<body>
+
+<div class="orbs"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+<div class="slides">
+
+  <section class="slide active" data-title="Приветствие">
+    <div class="wrap">
+      <div class="intro">
+        <div>
+          <h1>Привет! Я <span style="background:linear-gradient(135deg,#60a5fa,#34d399,#a78bfa); -webkit-background-clip:text; background-clip:text; color:transparent;">Александр Сакилев</span></h1>
+          <p class="lead">Учусь на IT и развиваю backend-проект <strong>«Система аренды жилья»</strong>: Django, DRF, MySQL, Docker, AWS.</p>
+          <div class="btns">
+            <span class="tag">Backend Developer</span>
+            <span class="tag">Django · DRF</span>
+            <span class="tag">REST API</span>
+            <span class="tag">JWT</span>
+          </div>
+          <div class="btns">
+            <a class="btn" href="#" onclick="goto(1); return false;">К проекту</a>
+            <a class="btn secondary" href="#" onclick="alert('Навигация слайдов: ← →  или PgUp/PgDn'); return false;">Как листать</a>
+          </div>
+        </div>
+        <div class="avatar">A&nbsp;S</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Обложка">
+    <div class="wrap" style="background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));">
+      <h1>Система аренды жилья</h1>
+      <p class="lead">Полнофункциональный back-end: объявления, поиск, фильтры, бронирования, отзывы, письма по SMTP</p>
+      <div class="btns">
+        <span class="tag">Django · DRF</span><span class="tag">MySQL</span><span class="tag">JWT</span><span class="tag">Docker</span><span class="tag">AWS (EC2)</span><span class="tag">SMTP</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Цель проекта">
+    <div class="wrap">
+      <h2>Цель проекта</h2>
+      <p class="lead">Создать бэкенд-приложение для системы аренды жилья с полноценным управлением объявлениями, поиском, фильтрами, ролями и бронированиями.</p>
+      <ul>
+        <li>CRUD для объявлений и управление их доступностью.</li>
+        <li>Поиск по ключевым словам + фильтры: цена, местоположение, комнаты, тип жилья.</li>
+        <li>Сортировка по цене и дате добавления.</li>
+        <li>Регистрация/вход, роли арендатор/арендодатель.</li>
+        <li>Бронирования: создание, просмотр, отмена; подтверждение со стороны владельца.</li>
+        <li>Отзывы и рейтинги арендаторов по объектам.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Управление объявлениями">
+    <div class="wrap">
+      <h2>Управление объявлениями</h2>
+      <div class="row">
+        <div class="card"><h3>Создание</h3><ul><li>Заголовок, описание</li><li>Местоположение</li><li>Цена</li><li>Комнаты</li><li>Тип жилья</li></ul></div>
+        <div class="card"><h3>Редактирование/удаление</h3><ul><li>Изменение любых полей</li><li>Удаление своих объектов</li></ul></div>
+        <div class="card"><h3>Статус доступности</h3><ul><li>Активно / неактивно</li><li>Скрытие из выдачи</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Поиск и фильтрация">
+    <div class="wrap">
+      <h2>Поиск и фильтрация</h2>
+      <div class="row">
+        <div class="card"><h3>Ключевые слова</h3><p class="muted">Поиск в заголовке и описании</p></div>
+        <div class="card"><h3>Фильтры</h3><ul><li>Цена: min/max</li><li>Местоположение (DE)</li><li>Комнаты: диапазон</li><li>Тип жилья</li></ul></div>
+        <div class="card"><h3>Сортировка</h3><ul><li>Цена ↑/↓</li><li>Дата: новые/старые</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Аутентификация и авторизация">
+    <div class="wrap">
+      <h2>Аутентификация и авторизация</h2>
+      <div class="row">
+        <div class="card"><h3>Регистрация</h3><ul><li>Имя (логин), Email, Пароль</li><li>Подтверждение e-mail (опц.)</li></ul></div>
+        <div class="card"><h3>Вход</h3><ul><li>JWT (access/refresh)</li><li>Защита эндпоинтов</li></ul></div>
+        <div class="card"><h3>Роли</h3><ul><li>Арендатор</li><li>Арендодатель</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Бронирования">
+    <div class="wrap">
+      <h2>Бронирования</h2>
+      <div class="row">
+        <div class="card"><h3>Создание</h3><p>Выбор дат, проверка пересечений, письмо владельцу.</p></div>
+        <div class="card"><h3>Просмотр</h3><p>Активные/завершённые, статусы, «Мои бронирования».</p></div>
+        <div class="card"><h3>Отмена/подтверждение</h3><p>Отмена клиентом; подтверждение/отклонение владельцем.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Рейтинги и отзывы">
+    <div class="wrap">
+      <h2>Рейтинги и отзывы</h2>
+      <ul>
+        <li>Оставлять отзыв может арендатор с бронированием.</li>
+        <li>Средний рейтинг и счётчик на списке объектов.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Дополнительный функционал">
+    <div class="wrap">
+      <h2>Дополнительный функционал</h2>
+      <div class="row">
+        <div class="card"><h3>Популярность</h3><p>Сортировка по просмотрам/отзывам.</p></div>
+        <div class="card"><h3>История поиска</h3><ul><li>Сохранение ключевых слов</li><li>Популярные запросы</li></ul></div>
+        <div class="card"><h3>История просмотров</h3><ul><li>Лог просмотров</li><li>Популярные объявления</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Технические требования">
+    <div class="wrap cols">
+      <div>
+        <h2>Технические требования</h2>
+        <ul>
+          <li><strong>Django + DRF</strong> — логика, API, админка</li>
+          <li><strong>MySQL</strong> — основная БД</li>
+          <li><strong>JWT</strong> — аутентификация</li>
+          <li><strong>SMTP</strong> — e-mail уведомления</li>
+          <li><strong>Docker</strong> — контейнеризация</li>
+          <li><strong>AWS (EC2)</strong> — развёртывание</li>
+        </ul>
+        <div class="btns"><span class="tag">.env</span><span class="tag">Статусы брони</span><span class="tag">i18n RU/DE/EN</span></div>
+      </div>
+      <div class="card">
+        <h3>Инфраструктура</h3>
+        <ul>
+          <li>Docker Compose: web, db, (nginx)</li>
+          <li>Статика/медиа: S3/локально</li>
+          <li>Логи: stdout + CloudWatch</li>
+          <li>Миграции при старте</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: Methods & Libraries -->
+  <section class="slide" data-title="Методы и библиотеки">
+    <div class="wrap">
+      <h2>Методы и библиотеки</h2>
+      <div class="row">
+        <div class="card">
+          <h3>Паттерны</h3>
+          <ul>
+            <li>DRF ViewSet + фильтры/поиск/сортировка</li>
+            <li>Аннотации: <code>Avg</code>, <code>Count</code>, <code>Prefetch</code></li>
+            <li>Проверка пересечений дат: <code>start≤end &amp; end≥start</code></li>
+            <li>Работа со статусами через безопасный <code>_choose_status</code></li>
+            <li>Шаблоны писем: <code>EmailMultiAlternatives</code>, <code>reply_to</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Библиотеки</h3>
+          <ul>
+            <li><strong>Django</strong>, <strong>Django REST Framework</strong></li>
+            <li><strong>django-filter</strong></li>
+            <li><strong>rest_framework_simplejwt</strong></li>
+            <li><strong>PyMySQL</strong></li>
+            <li><strong>python-dotenv</strong></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Инструменты</h3>
+          <ul>
+            <li>Docker/Compose</li>
+            <li>AWS EC2 (деплой)</li>
+            <li>i18n (RU/DE/EN)</li>
+            <li>Логи <code>logging</code> + admin actions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: Challenges & Solutions -->
+  <section class="slide" data-title="Трудности и решения">
+    <div class="wrap">
+      <h2>Трудности и решения</h2>
+      <div class="row">
+        <div class="card">
+          <h3>SMTP / Gmail (535)</h3>
+          <ul>
+            <li>Проблема: 535 BadCredentials, UnicodeEncodeError</li>
+            <li>Решение: App Password + 2FA; ASCII-пароль без пробелов</li>
+            <li>Фолбэк: <code>console.EmailBackend</code>, <code>try/except</code> → 502 вместо 500</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>URL/Reverse</h3>
+          <ul>
+            <li>Проблема: <code>NoReverseMatch</code> для custom admin</li>
+            <li>Решение: пространство имён <code>admin:bookings_booking_*</code></li>
+          </ul>
+          <ul>
+            <li>Проблема: отсутствующий <code>register_page</code></li>
+            <li>Решение: добавить маршрут + шаблон</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Миграции</h3>
+          <ul>
+            <li><code>Unknown column ... checkout_confirmed_at</code> → <code>makemigrations</code> + <code>migrate</code></li>
+            <li><code>fields.E160</code> → убрать конфликт <code>auto_now</code>/<code>default</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Брони</h3>
+          <ul>
+            <li>Проблема: отсутствие статуса <code>ACTIVE</code></li>
+            <li>Решение: универсальный <code>_choose_status()</code></li>
+            <li>Проверка пересечений дат + статусы</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Шаблоны</h3>
+          <ul>
+            <li><code>TemplateDoesNotExist</code> для писем → добавить в <code>templates/emails/</code></li>
+            <li>CSS: кириллица в единицах (<code>рем</code>) и HEX → заменить на <code>rem</code>, исправить <code>#991b1b</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Docker/Windows</h3>
+          <ul>
+            <li>Диск C: забивается → <code>.dockerignore</code>, тома, периодический <code>docker system prune</code></li>
+            <li>Перенос данных WSL2/образов на другой диск (настройки Docker Desktop)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Пользовательский сценарий">
+    <div class="wrap">
+      <h2>Сценарий пользователя</h2>
+      <ol>
+        <li>Регистрация или вход (JWT).</li>
+        <li>Поиск/фильтр → просмотр объекта.</li>
+        <li>Бронирование + e-mail владельцу.</li>
+        <li>Управление бронью: изменить даты или отменить.</li>
+        <li>По завершении — отзыв и рейтинг.</li>
+      </ol>
+      <div class="btns">
+        <a class="btn" href="#" onclick="window.print(); return false;">Печать / PDF</a>
+        <a class="btn secondary" href="#" onclick="alert('Навигация: ← → или PgUp/PgDn'); return false;">Подсказка</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Дорожная карта">
+    <div class="wrap">
+      <h2>Дорожная карта</h2>
+      <div class="row">
+        <div class="card"><h3>v1 (MVP)</h3><ul><li>CRUD объявлений</li><li>Поиск/фильтры</li><li>JWT</li><li>Бронирования/отмена</li><li>Отзывы</li></ul></div>
+        <div class="card"><h3>v1.1</h3><ul><li>Подтверждение e-mail</li><li>Популярные запросы/объявления</li><li>Аудит бронирований</li></ul></div>
+        <div class="card"><h3>Prod</h3><ul><li>AWS EC2 + Docker</li><li>Мониторинг/бэкапы</li><li>S3 для медиа</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="navhint">Навигация: <span class="kbd">←</span> <span class="kbd">→</span> • <span class="kbd">PgUp</span> <span class="kbd">PgDn</span> • Печать: <span class="kbd">Ctrl/Cmd+P</span></div>
+<div class="watermark">Александр Сакилев · RENTALS BACKEND</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('section.slide')];
+  let i=0;
+  function show(k){
+    i=(k+slides.length)%slides.length;
+    slides.forEach((s,idx)=>{ s.classList.toggle('active', idx===i); });
+    const pr=((i+1)/slides.length)*100; document.getElementById('progress').style.width=pr+'%';
+    document.title = (slides[i].dataset.title? slides[i].dataset.title + " — " : "") + "Система аренды жилья — презентация";
+  }
+  function onKey(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown') show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') show(i-1);
+  }
+  document.addEventListener('keydown', onKey);
+  let startX=null;
+  document.addEventListener('touchstart', e=>{ startX=e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    if(startX===null) return;
+    const dx=e.changedTouches[0].clientX-startX;
+    if(Math.abs(dx)>40){ show(i + (dx<0?1:-1)); }
+    startX=null;
+  }, {passive:true});
+  window.goto = function(n){ show(n); };
+  show(0);
+})();
+</script>
+</body>
+</html>
+"""
+path = "/mnt/data/rentals_presentation_v3.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(base)
+
+path

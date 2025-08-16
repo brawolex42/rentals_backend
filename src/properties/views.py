@@ -1,57 +1,185 @@
-from django.db.models import F
-from rest_framework import viewsets, decorators, response, status, permissions
+from django.views.generic import TemplateView, DetailView
+from django.db.models import Avg, Count, Prefetch
+from rest_framework import viewsets, permissions, status, serializers
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+
 from .models import Property
 from .serializers import PropertySerializer
-from .filters import PropertyFilter
 from .permissions import IsOwnerOrReadOnly
-from src.accounts.permissions import IsLandlord
-from src.analytics.models import ViewEvent
+
+
+def user_has_booking_for_property(user, prop):
+    if not user.is_authenticated:
+        return False
+    try:
+        from src.bookings.models import Booking
+    except Exception:
+        return False
+    field_names = {f.name for f in Booking._meta.get_fields()}
+    qs = Booking.objects.all()
+    if "property" in field_names:
+        qs = qs.filter(property=prop)
+    elif "property_id" in field_names:
+        qs = qs.filter(property_id=prop.pk)
+    user_field = None
+    for f in ("user", "author", "client", "customer", "renter", "tenant", "guest", "booked_by", "created_by", "owner"):
+        if f in field_names:
+            user_field = f
+            break
+    if user_field:
+        qs = qs.filter(**{user_field: user})
+    return qs.exists()
+
+
+class PublicCatalogView(TemplateView):
+    template_name = "properties/property_list.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        qs = (
+            Property.objects.all()
+            .annotate(
+                rating_avg=Avg("reviews__rating"),
+                reviews_total=Count("reviews", distinct=True),
+            )
+            .select_related("owner")
+            .prefetch_related(Prefetch("images"))
+            .order_by("-reviews_total", "-rating_avg", "-id")
+        )
+        props = list(qs)
+        if props:
+            prop_ids = [p.id for p in props]
+            try:
+                from src.bookings.models import Booking
+            except Exception:
+                for p in props:
+                    p.user_booking = None
+                    p.other_booking = False
+                ctx["properties"] = props
+                return ctx
+            if self.request.user.is_authenticated:
+                user_qs = (
+                    Booking.objects.filter(tenant=self.request.user, property_id__in=prop_ids)
+                    .exclude(status__in=["CANCELLED", "COMPLETED"])
+                    .order_by("property_id", "-created_at")
+                )
+                latest_by_prop = {}
+                for b in user_qs:
+                    if b.property_id not in latest_by_prop:
+                        latest_by_prop[b.property_id] = b
+                other_ids = set(
+                    Booking.objects.filter(property_id__in=prop_ids)
+                    .exclude(status__in=["CANCELLED", "COMPLETED"])
+                    .exclude(tenant=self.request.user)
+                    .values_list("property_id", flat=True)
+                )
+                for p in props:
+                    p.user_booking = latest_by_prop.get(p.id)
+                    p.other_booking = p.id in other_ids
+            else:
+                other_ids = set(
+                    Booking.objects.exclude(status__in=["CANCELLED", "COMPLETED"]).values_list("property_id", flat=True)
+                )
+                for p in props:
+                    p.user_booking = None
+                    p.other_booking = p.id in other_ids
+        ctx["properties"] = props
+        return ctx
+
+
+class PublicPropertyDetailView(DetailView):
+    model = Property
+    template_name = "properties/property_detail.html"
+    context_object_name = "property"
+
+    def get_queryset(self):
+        return (
+            Property.objects.all()
+            .annotate(
+                rating_avg=Avg("reviews__rating"),
+                reviews_total=Count("reviews", distinct=True),
+            )
+            .select_related("owner")
+            .prefetch_related(Prefetch("images"), Prefetch("reviews"))
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["user_can_review"] = user_has_booking_for_property(self.request.user, self.object)
+        user_booking = None
+        if self.request.user.is_authenticated:
+            try:
+                from src.bookings.models import Booking
+                user_booking = (
+                    Booking.objects.filter(property=self.object, tenant=self.request.user)
+                    .exclude(status__in=["CANCELLED", "COMPLETED"])
+                    .order_by("-created_at")
+                    .first()
+                )
+            except Exception:
+                user_booking = None
+        ctx["user_booking"] = user_booking
+        return ctx
+
 
 class PropertyViewSet(viewsets.ModelViewSet):
-    queryset = Property.objects.all().select_related('owner')
+    queryset = (
+        Property.objects.all()
+        .annotate(
+            rating_avg=Avg("reviews__rating"),
+            reviews_total=Count("reviews", distinct=True),
+        )
+        .order_by("-id")
+    )
     serializer_class = PropertySerializer
-    filterset_class = PropertyFilter
-    search_fields = ('title', 'description')
-    ordering_fields = ('price', 'created_at', 'views_count', 'reviews_count')
-    ordering = ('-created_at',)
-
-    def get_permissions(self):
-        if self.action == 'create':
-            return [permissions.IsAuthenticated(), IsLandlord()]
-        elif self.action in ['update', 'partial_update', 'destroy', 'toggle_active']:
-            return [permissions.IsAuthenticated(), IsOwnerOrReadOnly()]
-        return [permissions.AllowAny()]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    search_fields = ["title", "description", "city", "district"]
+    ordering_fields = ["price", "created_at", "rating_avg", "reviews_total", "id"]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        try:
+            serializer.save(owner=self.request.user)
+        except TypeError:
+            serializer.save()
 
-    def retrieve(self, request, *args, **kwargs):
-        obj = self.get_object()
-        # инкремент просмотров (атомарно)
-        Property.objects.filter(pk=obj.pk).update(views_count=F('views_count') + 1)
-        # пишем событие просмотра
-        user = request.user if request.user.is_authenticated else None
-        ViewEvent.objects.create(user=user, property=obj)
-        serializer = self.get_serializer(obj)
-        return response.Response(serializer.data)
 
-    @decorators.action(detail=True, methods=['post'])
-    def toggle_active(self, request, pk=None):
-        prop = self.get_object()
-        prop.is_active = not prop.is_active
-        prop.save(update_fields=['is_active'])
-        return response.Response({'is_active': prop.is_active})
+class ContactPropertySerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
+    phone = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    message = serializers.CharField(min_length=10, max_length=2000)
 
-    @decorators.action(detail=False, methods=['get'])
-    def popular(self, request):
-        by = request.query_params.get('by', 'views')
-        if by == 'reviews':
-            qs = self.filter_queryset(self.get_queryset().order_by('-reviews_count', '-views_count', '-created_at'))
-        else:
-            qs = self.filter_queryset(self.get_queryset().order_by('-views_count', '-reviews_count', '-created_at'))
-        page = self.paginate_queryset(qs)
-        if page is not None:
-            ser = self.get_serializer(page, many=True)
-            return self.get_paginated_response(ser.data)
-        ser = self.get_serializer(qs, many=True)
-        return response.Response(ser.data)
+
+class ContactPropertyView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, pk: int):
+        prop = get_object_or_404(Property.objects.select_related("owner"), pk=pk)
+        s = ContactPropertySerializer(data=request.data)
+        if not s.is_valid():
+            return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = s.validated_data
+        to_email = (prop.owner.email or "").strip()
+        if not to_email:
+            return Response({"detail": "Нет e-mail арендодателя."}, status=400)
+        ctx = {
+            "property": prop,
+            "name": data["name"],
+            "email": data["email"],
+            "phone": data.get("phone", ""),
+            "message": data["message"],
+        }
+        subject = f"Запрос по объекту: {prop.title} (#{prop.pk})"
+        html = render_to_string("emails/inquiry.html", ctx)
+        text = f"Объект: {prop.title} (#{prop.pk})\nИмя: {ctx['name']}\nEmail: {ctx['email']}\nТелефон: {ctx['phone']}\n\nСообщение:\n{ctx['message']}"
+        msg = EmailMultiAlternatives(subject, text, settings.DEFAULT_FROM_EMAIL, [to_email])
+        msg.attach_alternative(html, "text/html")
+        msg.reply_to = [ctx["email"]]
+        msg.send()
+        return Response({"detail": "Сообщение отправлено."})

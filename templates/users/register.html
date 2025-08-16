@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+
+<section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:240px; background:radial-gradient(90% 90% at 10% 10%, #93c5fd 0%, rgba(147,197,253,0) 60%), radial-gradient(90% 90% at 90% 20%, #6ee7b7 0%, rgba(110,231,183,0) 60%), linear-gradient(135deg, #1f2937, #111827);">
+  <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.4));"></div>
+  <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:960px;">
+    <h1 style="margin:0 0 .25rem; font-size:clamp(24px,4vw,42px); line-height:1.1;">Создайте аккаунт</h1>
+    <p style="margin:0 0 .9rem; opacity:.95; font-size:clamp(14px,2vw,18px);">Бронируйте быстрее и управляйте своими бронированиями в личном кабинете.</p>
+    <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+      <a href="/" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">На главную</a>
+      <a href="{% url 'admin:login' %}" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">Войти</a>
+    </div>
+  </div>
+</section>
+
+<div style="border:1px solid #e5e7eb; border-radius:10px; padding:1rem; background:#fff; max-width:560px;">
+  <form id="regForm" style="display:grid; gap:.75rem;">
+    {% csrf_token %}
+    <div>
+      <label for="username" style="display:block; font-size:.9rem; color:#555;">Логин</label>
+      <input id="username" name="username" type="text" required style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+    </div>
+    <div>
+      <label for="email" style="display:block; font-size:.9rem; color:#555;">E-mail</label>
+      <input id="email" name="email" type="email" required style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+    </div>
+    <div>
+      <label for="password" style="display:block; font-size:.9rem; color:#555;">Пароль</label>
+      <input id="password" name="password" type="password" required style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+    </div>
+    <button type="submit" style="padding:.6rem 1rem; background:#2563eb; color:#fff; border-radius:6px; border:none;">Создать аккаунт</button>
+    <div id="msg" style="display:none; padding:.5rem; border-radius:6px;"></div>
+    <div style="font-size:.9rem; color:#6b7280;">Уже есть аккаунт? <a href="{% url 'admin:login' %}">Войти</a></div>
+  </form>
+</div>
+
+<script>
+(function(){
+  function getCookie(name){
+    const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+    return m?m.pop():'';
+  }
+  const f=document.getElementById('regForm');
+  const msg=document.getElementById('msg');
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    msg.style.display='none';
+    const payload={
+      username: f.username.value.trim(),
+      email: f.email.value.trim(),
+      password: f.password.value
+    };
+    try{
+      const r=await fetch('/api/accounts/register/',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+        credentials:'same-origin',
+        body: JSON.stringify(payload)
+      });
+      const j=await r.json().catch(()=>({}));
+      if(r.ok){
+        msg.style.display='block';
+        msg.style.background='#dcfce7';
+        msg.style.border='1px solid #bbf7d0';
+        msg.style.color='#166534';
+        msg.textContent='Учётная запись создана. Теперь войдите.';
+        setTimeout(()=>{ window.location.href='/admin/login/?next=/'; }, 1000);
+      }else{
+        msg.style.display='block';
+        msg.style.background='#fee2e2';
+        msg.style.border='1px solid #fecaca';
+        msg.style.color='#991b1b';
+        msg.textContent = typeof j === 'object' ? JSON.stringify(j) : 'Ошибка регистрации';
+      }
+    }catch(_){
+      msg.style.display='block';
+      msg.style.background='#fee2e2';
+      msg.style.border='1px solid #fecaca';
+      msg.style.color='#991b1b';
+      msg.textContent='Сетевой сбой';
+    }
+  });
+})();
+</script>
+{% endblock %}

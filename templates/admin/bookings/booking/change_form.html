@@ -1,0 +1,20 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+{% block submit_buttons_top %}
+<div class="submit-row">
+  <a class="button" href="{% url 'admin:bookings_booking_send_owner_email' original.pk %}">Письмо владельцу</a>
+  {% if original.status != 'CANCELLED' and original.status != 'COMPLETED' %}
+    <a class="button deletelink" href="{% url 'admin:bookings_booking_cancel' original.pk %}">Отменить бронь</a>
+  {% endif %}
+</div>
+{{ block.super }}
+{% endblock %}
+{% block submit_buttons_bottom %}
+{{ block.super }}
+<div class="submit-row">
+  <a class="button" href="{% url 'admin:bookings_booking_send_owner_email' original.pk %}">Письмо владельцу</a>
+  {% if original.status != 'CANCELLED' and original.status != 'COMPLETED' %}
+    <a class="button deletelink" href="{% url 'admin:bookings_booking_cancel' original.pk %}">Отменить бронь</a>
+  {% endif %}
+</div>
+{% endblock %}

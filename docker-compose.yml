@@ -1,34 +1,41 @@
-version: '3.9'
 services:
   db:
     image: mysql:8.0
+    container_name: rentals_db
     environment:
       MYSQL_DATABASE: rentals
-      MYSQL_ROOT_PASSWORD: rootpass
-      TZ: Europe/Berlin
+      MYSQL_USER: rentals
+      MYSQL_PASSWORD: rentals123
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
-    command: ["--default-authentication-plugin=mysql_native_password","--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
-      - dbdata:/var/lib/mysql
+      - db_data:/var/lib/mysql
 
   web:
     build: .
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: rentals_web
+    env_file:
+      - .env
     environment:
-      DB_NAME: rentals
-      DB_USER: root
-      DB_PASSWORD: rootpass
+      IN_DOCKER: "1"
       DB_HOST: db
-      DB_PORT: 3306
-      DEBUG: "true"
-      SECRET_KEY: docker-secret
+      DB_NAME: ${DB_NAME:-rentals}
+      DB_USER: ${DB_USER:-rentals}
+      DB_PASSWORD: ${DB_PASSWORD:-rentals123}
+      DB_PORT: ${DB_PORT:-3306}
+    volumes:
+      - ./:/app
+      - ./media:/app/media
+      - ./static:/app/static
     ports:
       - "8000:8000"
     depends_on:
       - db
-    volumes:
-      - .:/app
+    command: >
+      sh -lc "python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
 
 volumes:
-  dbdata:
+  db_data:

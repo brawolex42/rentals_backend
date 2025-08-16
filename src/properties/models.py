@@ -45,6 +45,7 @@ class PropertyImage(models.Model):
     image = models.ImageField(upload_to='properties/%Y/%m/%d/')
     alt = models.CharField(max_length=200, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    address_line = models.CharField(max_length=255, blank=True, default='')
 
     def __str__(self):
         return self.alt or f"Image #{self.pk} for {self.property_id}"

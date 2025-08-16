@@ -5,3 +5,13 @@ djangorestframework-simplejwt>=5.3
 python-dotenv>=1.0
 PyMySQL>=1.1
 Pillow>=10.4
+Pillow
+faker
+Django>=5.2,<5.3
+djangorestframework
+django-filter
+PyMySQL
+python-dotenv
+gunicorn
+mysqlclient
+cryptography

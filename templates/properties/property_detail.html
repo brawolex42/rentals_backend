@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% block title %}{{ property.title }}{% endblock %}
+{% block content %}
+
+{% with first=property.images.first %}
+  {% if first and first.image %}
+    <section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:260px; background:center/cover no-repeat url('{{ first.image.url }}');">
+      <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.6));"></div>
+      <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:1100px;">
+        <h1 style="margin:0 0 .4rem; font-size:clamp(24px,4vw,42px); line-height:1.1;">{{ property.title }}</h1>
+        <div style="opacity:.95; font-size:clamp(14px,2vw,18px);">
+          {% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}{% if property.price %} • {{ property.price }} €{% endif %}
+        </div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.9rem;">
+          <a href="#book" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">Забронировать</a>
+          <a href="#gallery" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">К галерее</a>
+        </div>
+      </div>
+    </section>
+  {% else %}
+    <section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:260px; background:radial-gradient(90% 90% at 10% 10%, #93c5fd 0%, rgba(147,197,253,0) 60%), radial-gradient(90% 90% at 90% 20%, #6ee7b7 0%, rgba(110,231,183,0) 60%), linear-gradient(135deg, #1f2937, #111827);">
+      <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.4));"></div>
+      <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:1100px;">
+        <h1 style="margin:0 0 .4rem; font-size:clamp(24px,4vw,42px); line-height:1.1;">{{ property.title }}</h1>
+        <div style="opacity:.95; font-size:clamp(14px,2vw,18px);">
+          {% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}{% if property.price %} • {{ property.price }} €{% endif %}
+        </div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.9rem;">
+          <a href="#book" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">Забронировать</a>
+          <a href="#gallery" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">К галерее</a>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endwith %}
+
+<a id="gallery"></a>
+<div style="display:flex; gap:2rem; flex-wrap:wrap;">
+  <div style="flex:2; min-width:320px;">
+    {% with imgs=property.images.all %}
+      {% if imgs %}
+        <div id="thumbs" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.75rem;">
+          {% for image in imgs %}
+            {% if image.image %}
+              <img class="gallery-img" src="{{ image.image.url }}" data-src="{{ image.image.url }}" alt="{{ property.title }}" loading="lazy" style="width:100%; height:160px; object-fit:cover; cursor:zoom-in; border-radius:8px;">
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="width:100%; height:360px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:8px;">Нет фото</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div style="flex:1; min-width:280px;">
+    <h2>{{ property.title }}</h2>
+    <p>{% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}</p>
+    <p style="font-weight:bold;">{% if property.price %}{{ property.price }} €{% endif %}</p>
+    <p>{{ property.description }}</p>
+
+    <a id="book"></a>
+    <div style="margin-top:1rem;">
+      {% if request.user.is_authenticated %}
+        <form action="{% url 'property_book_now' property.pk %}" method="post" style="display:grid; gap:.5rem; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); align-items:end;">
+          {% csrf_token %}
+          <div>
+            <label for="check_in" style="display:block; font-size:.9rem; color:#555;">Дата заезда</label>
+            <input id="check_in" name="check_in" type="date" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+          </div>
+          <div>
+            <label for="check_out" style="display:block; font-size:.9rem; color:#555;">Дата выезда</label>
+            <input id="check_out" name="check_out" type="date" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+          </div>
+          <div>
+            <label for="guests" style="display:block; font-size:.9rem; color:#555;">Гостей</label>
+            <input id="guests" name="guests" type="number" min="1" value="1" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label for="note" style="display:block; font-size:.9rem; color:#555;">Сообщение владельцу (необязательно)</label>
+            <textarea id="note" name="note" rows="3" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;"></textarea>
+          </div>
+          <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+            <button type="submit" style="padding:.6rem 1rem; background:#2563eb; color:#fff; border-radius:6px; border:none;">Забронировать</button>
+            <button id="contactBtn" type="button" style="padding:.6rem 1rem; background:#10b981; color:#fff; border-radius:6px; border:none;">Написать владельцу</button>
+          </div>
+        </form>
+        {% if user_booking %}
+          <a href="{% url 'booking_edit' user_booking.id %}" style="display:inline-block; margin-top:.5rem; padding:.5rem .9rem; background:#10b981; color:#fff; border-radius:8px; text-decoration:none;">Управление бронью</a>
+        {% endif %}
+      {% else %}
+        <div style="border:1px solid #e5e7eb; background:#f9fafb; padding:1rem; border-radius:6px; display:flex; gap:.5rem; flex-wrap:wrap;">
+          <span>Войдите в систему, чтобы забронировать.</span>
+          <a href="{% url 'admin:login' %}">Войти</a>
+          <button id="contactBtn" type="button" style="padding:.45rem .8rem; background:#10b981; color:#fff; border-radius:6px; border:none;">Написать владельцу без регистрации</button>
+        </div>
+      {% endif %}
+    </div>
+
+    <p style="margin-top:1rem;">⭐ {{ property.rating_avg|default_if_none:"—" }} ({{ property.reviews_total|default:"0" }})</p>
+  </div>
+</div>
+
+<hr style="margin:2rem 0;">
+
+<h3 style="margin:.5rem 0 1rem;">Отзывы</h3>
+<div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1rem;">
+  {% for r in property.reviews.all %}
+    <div style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fff;">
+      <div style="font-weight:600;">⭐ {{ r.rating }}</div>
+      <div style="margin-top:.25rem;">
+        {% if r.text %}{{ r.text }}
+        {% elif r.comment %}{{ r.comment }}
+        {% elif r.content %}{{ r.content }}
+        {% else %}—{% endif %}
+      </div>
+      {% if r.created_at %}<div style="color:#666; font-size:.9rem; margin-top:.25rem;">{{ r.created_at }}</div>{% endif %}
+    </div>
+  {% empty %}
+    <div style="color:#666;">Пока нет отзывов.</div>
+  {% endfor %}
+</div>
+
+{% if not request.user.is_authenticated %}
+<div style="border:1px solid #ffe0a3; background:#fff7e0; color:#6a4b00; padding:1rem; border-radius:.5rem;">
+  Войдите, чтобы оставить отзыв.
+</div>
+{% elif user_can_review %}
+<form action="{% url 'property_add_review' property.pk %}" method="post" style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fbfbfb;">
+  {% csrf_token %}
+  <label for="rating" style="display:block; margin-bottom:.5rem;">Рейтинг (1–5):</label>
+  <select id="rating" name="rating" required style="padding:.4rem; margin-bottom:1rem;">
+    <option value="5">5 — отлично</option>
+    <option value="4">4 — хорошо</option>
+    <option value="3">3 — нормально</option>
+    <option value="2">2 — плохо</option>
+    <option value="1">1 — ужасно</option>
+  </select>
+  <label for="text" style="display:block; margin-bottom:.5rem;">Комментарий:</label>
+  <textarea id="text" name="text" rows="4" required style="width:100%; padding:.6rem;"></textarea>
+  <div style="margin-top:1rem;">
+    <button type="submit" style="padding:.6rem 1rem; background:#007bff; color:#fff; border-radius:5px; border:none;">Отправить отзыв</button>
+  </div>
+</form>
+{% else %}
+<div style="border:1px solid #e5e7eb; background:#f9fafb; color:#374151; padding:1rem; border-radius:.5rem;">
+  Оставлять отзыв могут только клиенты с бронированием этого объекта.
+</div>
+{% endif %}
+
+<div id="lightbox" style="position:fixed; inset:0; background:rgba(0,0,0,.9); display:none; align-items:center; justify-content:center; z-index:9999;">
+  <button id="lb-close" aria-label="close" style="position:absolute; top:16px; right:16px; font-size:24px; color:#fff; background:transparent; border:none; cursor:pointer;">✕</button>
+  <button id="lb-prev" aria-label="prev" style="position:absolute; left:16px; font-size:28px; color:#fff; background:transparent; border:none; cursor:pointer;">‹</button>
+  <img id="lb-img" alt="" style="max-width:90vw; max-height:85vh; object-fit:contain;">
+  <button id="lb-next" aria-label="next" style="position:absolute; right:16px; font-size:28px; color:#fff; background:transparent; border:none; cursor:pointer;">›</button>
+</div>
+
+<div id="contactModal" style="position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:10000;">
+  <div style="background:#fff; width:min(640px,92vw); border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.2); overflow:hidden;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:.9rem 1.1rem; border-bottom:1px solid #e5e7eb;">
+      <div style="font-weight:700;">Связаться с владельцем</div>
+      <button id="contactClose" style="font-size:22px; border:none; background:transparent; cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:1rem;">
+      <form id="contactForm" style="display:grid; gap:.75rem;">
+        {% csrf_token %}
+        <div>
+          <label for="c_name" style="display:block; font-size:.9rem; color:#555;">Имя</label>
+          <input id="c_name" name="name" type="text" value="{% if request.user.is_authenticated %}{{ request.user.get_username }}{% endif %}" required style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;">
+        </div>
+        <div>
+          <label for="c_email" style="display:block; font-size:.9rem; color:#555;">E-mail</label>
+          <input id="c_email" name="email" type="email" value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" required style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;">
+        </div>
+        <div>
+          <label for="c_phone" style="display:block; font-size:.9rem; color:#555;">Телефон</label>
+          <input id="c_phone" name="phone" type="text" placeholder="+49..." style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;">
+        </div>
+        <div>
+          <label for="c_msg" style="display:block; font-size:.9rem; color:#555;">Сообщение</label>
+          <textarea id="c_msg" name="message" rows="5" required style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;"></textarea>
+        </div>
+        <div id="c_alert" style="display:none; padding:.6rem; border-radius:8px;"></div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+          <button type="submit" id="c_send" style="padding:.6rem 1rem; background:#2563eb; color:#fff; border-radius:8px; border:none;">Отправить</button>
+          <button type="button" id="c_cancel" style="padding:.6rem 1rem; background:#6b7280; color:#fff; border-radius:8px; border:none;">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const root=document.documentElement;
+  const btn=document.getElementById('themeBtn');
+  const saved=localStorage.getItem('ui_theme')||'light';
+  root.setAttribute('data-theme', saved);
+  function nextTheme(t){return t==='light'?'dark':'light'}
+  if(btn){btn.addEventListener('click', ()=>{const cur=root.getAttribute('data-theme')||'light';const next=nextTheme(cur);root.setAttribute('data-theme', next);localStorage.setItem('ui_theme', next);});}
+})();
+(function(){
+  const thumbs = Array.from(document.querySelectorAll('.gallery-img'));
+  if(!thumbs.length) return;
+  const box = document.getElementById('lightbox');
+  const img = document.getElementById('lb-img');
+  const prev = document.getElementById('lb-prev');
+  const next = document.getElementById('lb-next');
+  const closeBtn = document.getElementById('lb-close');
+  let i = 0;
+  function show(k){
+    i = (k + thumbs.length) % thumbs.length;
+    img.src = thumbs[i].dataset.src || thumbs[i].src;
+    box.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  thumbs.forEach((t, idx)=>{t.addEventListener('click', ()=>show(idx));});
+  prev.addEventListener('click', ()=>show(i-1));
+  next.addEventListener('click', ()=>show(i+1));
+  closeBtn.addEventListener('click', ()=>{box.style.display='none';document.body.style.overflow='';img.src='';});
+  box.addEventListener('click', (e)=>{if(e.target === box) closeBtn.click();});
+  window.addEventListener('keydown', (e)=>{if(box.style.display!=='flex') return; if(e.key==='Escape') closeBtn.click(); if(e.key==='ArrowLeft') prev.click(); if(e.key==='ArrowRight') next.click();});
+  if(location.hash === '#gallery') { const first = thumbs[0]; if(first) setTimeout(()=>first.scrollIntoView({behavior:'smooth', block:'start'}), 50); }
+})();
+(function(){
+  function getCookie(name){
+    const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+    return m?m.pop():'';
+  }
+  const openBtn=document.getElementById('contactBtn');
+  const modal=document.getElementById('contactModal');
+  const closeBtn=document.getElementById('contactClose');
+  const cancelBtn=document.getElementById('c_cancel');
+  const form=document.getElementById('contactForm');
+  const alertBox=document.getElementById('c_alert');
+  const sendBtn=document.getElementById('c_send');
+
+  function open(){ modal.style.display='flex'; document.body.style.overflow='hidden'; }
+  function close(){ modal.style.display='none'; document.body.style.overflow=''; }
+  if(openBtn){ openBtn.addEventListener('click', open); }
+  if(closeBtn){ closeBtn.addEventListener('click', close); }
+  if(cancelBtn){ cancelBtn.addEventListener('click', close); }
+  if(modal){ modal.addEventListener('click', e=>{ if(e.target===modal) close(); }); }
+  window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.style.display==='flex') close(); });
+
+  if(form){
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      alertBox.style.display='none';
+      sendBtn.disabled=true;
+      const payload={
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        message: form.message.value.trim()
+      };
+      try{
+        const r=await fetch('/api/properties/{{ property.pk }}/contact/',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+          credentials:'same-origin',
+          body: JSON.stringify(payload)
+        });
+        const j=await r.json().catch(()=>({}));
+        if(r.ok){
+          alertBox.style.display='block';
+          alertBox.style.background='#dcfce7';
+          alertBox.style.border='1px solid #bbf7d0';
+          alertBox.style.color='#166534';
+          alertBox.textContent='Сообщение отправлено владельцу.';
+          setTimeout(()=>{ close(); form.reset(); }, 800);
+        }else{
+          alertBox.style.display='block';
+          alertBox.style.background='#fee2e2';
+          alertBox.style.border='1px solid #fecaca';
+          alertBox.style.color='#991b1b';
+          alertBox.textContent = typeof j === 'object' ? JSON.stringify(j) : 'Ошибка отправки';
+        }
+      }catch(_){
+        alertBox.style.display='block';
+        alertBox.style.background='#fee2e2';
+        alertBox.style.border='1px solid #fecaca';
+        alertBox.style.color='#991b1b';
+        alertBox.textContent='Сетевой сбой';
+      }finally{
+        sendBtn.disabled=false;
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

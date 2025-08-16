@@ -1,6 +1,8 @@
-from rest_framework.routers import DefaultRouter
-from .views import BookingViewSet
+from django.urls import path
+from .views import ConfirmCheckoutView, MarkOverdueView, CancelBookingView
 
-router = DefaultRouter()
-router.register(r'bookings', BookingViewSet, basename='booking')
-urlpatterns = router.urls
+urlpatterns = [
+    path('<int:pk>/confirm-checkout/', ConfirmCheckoutView.as_view(), name='booking_confirm_checkout'),
+    path('<int:pk>/mark-overdue/', MarkOverdueView.as_view(), name='booking_mark_overdue'),
+    path('<int:pk>/cancel/', CancelBookingView.as_view(), name='booking_cancel'),
+]
