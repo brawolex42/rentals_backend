@@ -1,0 +1,29 @@
+
+{% extends "base.html" %}
+{% block title %}Mein Konto{% endblock %}
+{% block content %}
+<div class="headline"><h1>Mein Konto</h1></div>
+
+<div class="card" style="padding:1rem; margin-bottom:1rem;">
+  <div style="display:grid; gap:.3rem;">
+    <div><strong>E-Mail:</strong> {{ request.user.email }}</div>
+  </div>
+</div>
+
+<div class="card" style="padding:1rem; margin-bottom:1rem;">
+  <h2 style="margin:0 0 .6rem;">Schnellzugriff</h2>
+  <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+    <a class="pill active" href="{% url 'my_bookings' %}">Meine Buchungen</a>
+    <a class="pill" href="{% url 'logout' %}">Abmelden</a>
+  </div>
+</div>
+
+<div class="card" style="padding:1rem;">
+  <h2 style="margin:0 0 .6rem;">Konto löschen</h2>
+  <p style="opacity:.85; margin:.2rem 0 1rem;">Dies deaktiviert Ihr Konto und beendet den Zugriff.</p>
+  <form method="post" action="{% url 'account_delete' %}" onsubmit="return confirm('Konto wirklich löschen?');">
+    {% csrf_token %}
+    <button type="submit" class="pill" style="background:#fee2e2; border:1px solid #ef4444; color:#ef4444;">Konto löschen</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,97 +1,97 @@
 {% extends "base.html" %}
-{% block title %}Каталог недвижимости{% endblock %}
+{% load i18n l10n %}
+{% block title %}{% trans "Find a cozy place to stay" %}{% endblock %}
 {% block content %}
 
-{% with p=properties|first %}
-  {% if p and p.images.first and p.images.first.image %}
-    {% with hero_url=p.images.first.image.url %}
-      <section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:240px; background:center/cover no-repeat url('{{ hero_url }}');">
-        <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));"></div>
-        <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:960px;">
-          <h2 style="margin:0 0 .25rem; font-size:clamp(24px,4vw,40px); line-height:1.1;">Найдите уютное жильё</h2>
-          <p style="margin:0 0 .9rem; opacity:.95; font-size:clamp(14px,2vw,18px);">Просматривайте варианты, бронируйте онлайн и управляйте бронями в один клик.</p>
-          <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-            <a href="#list" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">Перейти к каталогу</a>
-            {% if request.user.is_authenticated %}
-              <a href="{% url 'my_bookings' %}" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">Мои бронирования</a>
-            {% else %}
-              <a href="{% url 'register_page' %}" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">Регистрация</a>
-            {% endif %}
-          </div>
-        </div>
-      </section>
-    {% endwith %}
-  {% else %}
-    <section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:240px; background:radial-gradient(90% 90% at 10% 10%, #93c5fd 0%, rgba(147,197,253,0) 60%), radial-gradient(90% 90% at 90% 20%, #6ee7b7 0%, rgba(110,231,183,0) 60%), linear-gradient(135deg, #1f2937, #111827);">
-      <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.4));"></div>
-      <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:960px;">
-        <h2 style="margin:0 0 .25rem; font-size:clamp(24px,4vw,40px); line-height:1.1;">Добро пожаловать</h2>
-        <p style="margin:0 0 .9rem; opacity:.95; font-size:clamp(14px,2vw,18px);">Выберите подходящий объект и бронируйте онлайн.</p>
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-          <a href="#list" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">К каталогу</a>
-          {% if request.user.is_authenticated %}
-            <a href="{% url 'admin:index' %}" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">Админ-панель</a>
-          {% else %}
-            <a href="{% url 'register_page' %}" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">Регистрация</a>
-          {% endif %}
-        </div>
-      </div>
-    </section>
-  {% endif %}
-{% endwith %}
+<section class="card" style="overflow:hidden; margin:0 0 1rem;">
+  {% with p=properties|first %}
+    {% if p and p.images.first and p.images.first.image %}
+      <img src="{{ p.images.first.image.url }}" alt="" style="width:100%; height:260px; object-fit:cover;">
+    {% endif %}
+  {% endwith %}
+  <div style="padding:clamp(20px,4vw,36px);">
+    <h2 style="margin:0 0 .35rem; font-size:clamp(22px,4vw,34px);">{% trans "Find a cozy place to stay" %}</h2>
+    <p class="muted" style="margin:0 0 .9rem;">{% trans "Browse options, book online, and manage bookings in one click." %}</p>
+    <a href="#list" class="btn btn-success">{% trans "Go to catalog" %}</a>
+    {% if not request.user.is_authenticated %}
+      <a href="{% url 'register_page' %}" class="btn btn-primary" style="margin-left:.5rem;">{% trans "Register" %}</a>
+    {% endif %}
+  </div>
+</section>
 
 <a id="list"></a>
-<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1rem;">
+<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:1rem;">
   {% for property in properties %}
-  <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
+  <article class="card" style="display:flex; flex-direction:column; overflow:hidden;">
     {% with first=property.images.first %}
       {% if first and first.image %}
         <a href="{% url 'property_detail' property.pk %}">
-          <img src="{{ first.image.url }}" alt="{{ property.title }}" style="width:100%; height:180px; object-fit:cover;">
+          <img src="{{ first.image.url }}" alt="{{ property.title }}" style="width:100%; height:190px; object-fit:cover;">
         </a>
       {% else %}
-        <div style="width:100%; height:180px; display:flex; align-items:center; justify-content:center; background:#f3f4f6;">Нет фото</div>
+        <div style="width:100%; height:190px; display:flex; align-items:center; justify-content:center;">{% trans "No photo" %}</div>
       {% endif %}
     {% endwith %}
-    <div style="padding:1rem;">
-      <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.5rem;">
+
+    <div style="padding:1rem; display:flex; flex-direction:column; gap:.6rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
+        <h3 style="margin:0; font-size:1.05rem;">
+          <a href="{% url 'property_detail' property.pk %}" style="text-decoration:none;">{{ property.title }}</a>
+        </h3>
+        <div style="display:flex; gap:.35rem; flex-wrap:wrap;">
+          {% if request.user.is_authenticated and property.user_booking %}
+            <span class="badge">{% trans "Your booking" %}</span>
+          {% elif property.other_booking %}
+            <span class="badge">{% trans "Occupied" %}</span>
+          {% else %}
+            <span class="badge">{% trans "Available" %}</span>
+          {% endif %}
+          {% if request.user.is_authenticated and property.owner_id == request.user.id %}
+            <span class="badge">{% trans "My property" %}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="muted" style="display:flex; gap:.6rem; flex-wrap:wrap;">
+        {% if property.city %}
+          <span>{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}</span>
+        {% endif %}
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:.75rem;">
+        <span class="price">
+          {% localize on %}€ {{ property.price|floatformat:2 }}{% endlocalize %}
+        </span>
+        <span class="rating">
+          ⭐ {{ property.rating_avg|floatformat:1|default_if_none:"—" }} ({{ property.reviews_total|default:"0" }})
+        </span>
+      </div>
+
+      <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.1rem;">
+        <a href="{% url 'property_detail' property.pk %}" class="pill">{% trans "Open" %}</a>
+        <a href="{% url 'property_detail' property.pk %}#gallery" class="pill">{% trans "View" %}</a>
+        {% if request.user.is_authenticated and not property.user_booking and not property.other_booking %}
+          <a href="{% url 'property_detail' property.pk %}#book" class="pill">{% trans "Book now" %}</a>
+        {% endif %}
+        <a href="{% url 'property_detail' property.pk %}#contact" class="pill">{% trans "Contact host" %}</a>
         {% if request.user.is_authenticated and property.user_booking %}
-          <span style="display:inline-block; padding:.2rem .5rem; border-radius:999px; background:#dbeafe; color:#1e40af; font-size:.8rem;">Ваша бронь</span>
-        {% elif property.other_booking %}
-          <span style="display:inline-block; padding:.2rem .5rem; border-radius:999px; background:#f3f4f6; color:#374151; font-size:.8rem;">Занято</span>
-        {% else %}
-          <span style="display:inline-block; padding:.2rem .5rem; border-radius:999px; background:#dcfce7; color:#166534; font-size:.8rem;">Свободно</span>
-        {% endif %}
-        {% if request.user.is_authenticated and property.owner_id == request.user.id %}
-          <span style="display:inline-block; padding:.2rem .5rem; border-radius:999px; background:#fee2e2; color:#991b1b; font-size:.8rem;">Мой объект</span>
+          <a href="{% url 'booking_edit' property.user_booking.id %}" class="pill">{% trans "Manage booking" %}</a>
         {% endif %}
       </div>
-      <h3 style="margin:0 0 .5rem; font-size:1.05rem;">
-        <a href="{% url 'property_detail' property.pk %}" style="text-decoration:none; color:#111827;">{{ property.title }}</a>
-      </h3>
-      <p style="margin:0 0 .5rem; color:#4b5563;">
-        {% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}
-      </p>
-      <div style="display:flex; align-items:center; gap:.75rem; margin:.25rem 0 1rem;">
-        <span style="font-weight:700;">{% if property.price %}€ {{ property.price }}{% endif %}</span>
-        <span>⭐ {{ property.rating_avg|default_if_none:"—" }} ({{ property.reviews_total|default:"0" }})</span>
-      </div>
-      <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-        <a href="{% url 'property_detail' property.pk %}" style="display:inline-block; padding:.5rem .9rem; background:#3b82f6; color:#fff; border-radius:8px; text-decoration:none;">Открыть</a>
-        <a href="{% url 'property_detail' property.pk %}#gallery" style="display:inline-block; padding:.5rem .9rem; background:#6b7280; color:#fff; border-radius:8px; text-decoration:none;">Просмотреть</a>
-        {% if request.user.is_authenticated and property.user_booking %}
-          <a href="{% url 'booking_edit' property.user_booking.id %}" style="display:inline-block; padding:.5rem .9rem; background:#10b981; color:#fff; border-radius:8px; text-decoration:none;">Управление бронью</a>
-        {% endif %}
-      </div>
+
       {% if request.user.is_authenticated and property.user_booking %}
-        <div style="margin-top:.6rem; padding:.6rem; border:1px solid #ffe4e6; background:#fff1f2; border-radius:6px;">
-          Даты вашей брони: <strong>{{ property.user_booking.start_date }} — {{ property.user_booking.end_date }}</strong>
+        <div class="alert alert-info" style="margin-top:.25rem;">
+          {% localize on %}
+          {% blocktrans with start=property.user_booking.start_date|date:"DATE_FORMAT" end=property.user_booking.end_date|date:"DATE_FORMAT" %}
+            Your booking dates: {{ start }} — {{ end }}
+          {% endblocktrans %}
+          {% endlocalize %}
         </div>
       {% endif %}
     </div>
-  </div>
+  </article>
   {% empty %}
-  <p>Нет объявлений</p>
+    <p>{% trans "No listings" %}</p>
   {% endfor %}
 </div>
 {% endblock %}

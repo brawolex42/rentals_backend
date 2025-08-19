@@ -1,35 +1,58 @@
 from rest_framework import serializers
-from .models import Review
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.apps import apps
+from src.properties.models import Property
 from src.shared.enums import BookingStatus
-from src.bookings.models import Booking
+from .models import Review
+
+
+class ReviewAuthorSafeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    display_name = serializers.SerializerMethodField()
+    def get_display_name(self, obj):
+        if hasattr(obj, "get_display_name"):
+            return obj.get_display_name()
+        name = (getattr(obj, "first_name", "") + " " + getattr(obj, "last_name", "")).strip()
+        return name or getattr(obj, "username", "User")
+
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = ReviewAuthorSafeSerializer(read_only=True)
     class Meta:
         model = Review
-        fields = '__all__'
-        read_only_fields = ('author', 'created_at')
+        fields = ["id", "property", "author", "rating", "text", "created_at", "updated_at"]
+        read_only_fields = ["id", "author", "created_at", "updated_at"]
 
-    def validate_rating(self, value):
-        if not (1 <= value <= 5):
-            raise serializers.ValidationError("Рейтинг должен быть в диапазоне 1..5.")
-        return value
 
-    def validate(self, data):
-        request = self.context.get('request')
-        if not request or not request.user or not request.user.is_authenticated:
-            raise serializers.ValidationError("Требуется аутентификация.")
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ["property", "rating", "text"]
 
-        prop = data.get('property')
-        if not prop:
-            return data
-
-        # хотя бы одно подтверждённое бронирование для этого объекта
-        has_booking = Booking.objects.filter(
-            property=prop,
-            tenant=request.user,
-            status=BookingStatus.CONFIRMED
+    def validate(self, attrs):
+        user = self.context["request"].user
+        prop = attrs.get("property")
+        rating = int(attrs.get("rating") or 0)
+        if not isinstance(prop, Property):
+            raise serializers.ValidationError({"property": _("Invalid property.")})
+        if not (1 <= rating <= 5):
+            raise serializers.ValidationError({"rating": _("Rating must be between 1 and 5.")})
+        Booking = apps.get_model('bookings', 'Booking')
+        today = timezone.localdate()
+        has_started_stay = Booking.objects.filter(
+            property=prop, tenant=user
+        ).exclude(
+            status__in=[BookingStatus.CANCELLED, BookingStatus.CANCELED]
+        ).filter(
+            start_date__lte=today
         ).exists()
+        if not has_started_stay:
+            raise serializers.ValidationError(_("You can leave a review only after your stay has started."))
+        if Review.objects.filter(property=prop, author=user).exists():
+            raise serializers.ValidationError(_("You have already reviewed this property."))
+        return attrs
 
-        if not has_booking:
-            raise serializers.ValidationError("Оставлять отзыв могут только пользователи с подтверждённым бронированием этой недвижимости.")
-        return data
+    def create(self, validated_data):
+        validated_data["author"] = self.context["request"].user
+        return super().create(validated_data)

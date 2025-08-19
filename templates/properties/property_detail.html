@@ -1,291 +1,282 @@
 {% extends "base.html" %}
+{% load i18n l10n %}
 {% block title %}{{ property.title }}{% endblock %}
 {% block content %}
 
-{% with first=property.images.first %}
-  {% if first and first.image %}
-    <section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:260px; background:center/cover no-repeat url('{{ first.image.url }}');">
-      <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.6));"></div>
-      <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:1100px;">
-        <h1 style="margin:0 0 .4rem; font-size:clamp(24px,4vw,42px); line-height:1.1;">{{ property.title }}</h1>
-        <div style="opacity:.95; font-size:clamp(14px,2vw,18px);">
-          {% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}{% if property.price %} • {{ property.price }} €{% endif %}
+<section style="display:grid; grid-template-columns:1.2fr .8fr; gap:1rem;">
+  <div style="display:grid; gap:1rem;">
+    <article class="card">
+      <div style="padding:1rem;">
+        <h1 style="margin:0 0 .4rem; font-size:clamp(20px,3vw,28px);">{{ property.title }}</h1>
+        <div class="muted" style="display:flex; gap:.6rem; flex-wrap:wrap;">
+          {% if property.city %}<span>{{ property.city }}{% if property.display_district %}, {{ property.display_district }}{% endif %}</span>{% endif %}
         </div>
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.9rem;">
-          <a href="#book" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">Забронировать</a>
-          <a href="#gallery" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">К галерее</a>
-        </div>
-      </div>
-    </section>
-  {% else %}
-    <section style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem; min-height:260px; background:radial-gradient(90% 90% at 10% 10%, #93c5fd 0%, rgba(147,197,253,0) 60%), radial-gradient(90% 90% at 90% 20%, #6ee7b7 0%, rgba(110,231,183,0) 60%), linear-gradient(135deg, #1f2937, #111827);">
-      <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.4));"></div>
-      <div style="position:relative; padding:clamp(24px,5vw,64px); color:#fff; max-width:1100px;">
-        <h1 style="margin:0 0 .4rem; font-size:clamp(24px,4vw,42px); line-height:1.1;">{{ property.title }}</h1>
-        <div style="opacity:.95; font-size:clamp(14px,2vw,18px);">
-          {% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}{% if property.price %} • {{ property.price }} €{% endif %}
-        </div>
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.9rem;">
-          <a href="#book" style="display:inline-block; padding:.7rem 1rem; background:#10b981; color:#fff; border-radius:10px; text-decoration:none;">Забронировать</a>
-          <a href="#gallery" style="display:inline-block; padding:.7rem 1rem; background:#2563eb; color:#fff; border-radius:10px; text-decoration:none;">К галерее</a>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:.75rem; margin-top:.6rem;">
+          <span class="price">€ {% localize on %}{{ property.price|floatformat:2 }}{% endlocalize %}</span>
+          <span class="rating">⭐ {{ property.rating_avg|floatformat:1|default:"—" }} ({{ property.reviews_total|default:"0" }})</span>
         </div>
       </div>
-    </section>
-  {% endif %}
-{% endwith %}
+    </article>
 
-<a id="gallery"></a>
-<div style="display:flex; gap:2rem; flex-wrap:wrap;">
-  <div style="flex:2; min-width:320px;">
-    {% with imgs=property.images.all %}
-      {% if imgs %}
-        <div id="thumbs" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.75rem;">
-          {% for image in imgs %}
-            {% if image.image %}
-              <img class="gallery-img" src="{{ image.image.url }}" data-src="{{ image.image.url }}" alt="{{ property.title }}" loading="lazy" style="width:100%; height:160px; object-fit:cover; cursor:zoom-in; border-radius:8px;">
-            {% endif %}
+    <article id="gallery" class="card" style="overflow:hidden;">
+      <div style="padding:1rem;">
+        <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Gallery" %}</h2>
+        <div id="gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:.75rem;">
+          {% for img in property.images.all %}
+            <img src="{{ img.image.url }}" alt="{{ property.title }}" style="width:100%; height:220px; object-fit:cover; border-radius:10px; cursor:pointer;" data-index="{{ forloop.counter0 }}">
+          {% empty %}
+            <div style="width:100%; height:220px; display:flex; align-items:center; justify-content:center;">{% trans "No photo" %}</div>
           {% endfor %}
         </div>
-      {% else %}
-        <div style="width:100%; height:360px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:8px;">Нет фото</div>
-      {% endif %}
-    {% endwith %}
+      </div>
+    </article>
+
+    <article id="reviews" class="card">
+      <div style="padding:1rem;">
+        <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Reviews" %}</h2>
+        {% if reviews %}
+          <div style="display:grid; gap:.6rem; margin:0 0 1rem;">
+            {% for r in reviews %}
+              <div class="card" style="padding:.75rem;">
+                <div style="display:flex; justify-content:space-between; gap:.5rem;">
+                  <strong>{{ r.display_user }}</strong>
+                  <span class="rating">⭐ {{ r.rating }}</span>
+                </div>
+                {% if r.text %}
+                  <div class="muted" style="margin-top:.35rem;">{{ r.text }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted">{% trans "No reviews yet." %}</p>
+        {% endif %}
+
+        {% if request.user.is_authenticated and user_can_review %}
+          <form method="post" action="{% url 'property_add_review' property.pk %}" style="display:grid; gap:.6rem; margin-top:.5rem;">
+            {% csrf_token %}
+            <div>
+              <label for="rev_rating">{% trans "Your rating" %}</label>
+              <select id="rev_rating" name="rating" required style="width:160px;">
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+              </select>
+            </div>
+            <div>
+              <label for="rev_text">{% trans "Your review (optional)" %}</label>
+              <textarea id="rev_text" name="text" rows="4"></textarea>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">{% trans "Submit review" %}</button>
+            </div>
+          </form>
+        {% endif %}
+      </div>
+    </article>
   </div>
 
-  <div style="flex:1; min-width:280px;">
-    <h2>{{ property.title }}</h2>
-    <p>{% if property.city %}{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}{% endif %}</p>
-    <p style="font-weight:bold;">{% if property.price %}{{ property.price }} €{% endif %}</p>
-    <p>{{ property.description }}</p>
+  <div style="display:grid; gap:1rem;">
+    <article id="book" class="card">
+      <div style="padding:1rem;">
+        <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Booking" %}</h2>
 
-    <a id="book"></a>
-    <div style="margin-top:1rem;">
-      {% if request.user.is_authenticated %}
-        <form action="{% url 'property_book_now' property.pk %}" method="post" style="display:grid; gap:.5rem; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); align-items:end;">
-          {% csrf_token %}
+        {% if request.user.is_authenticated and user_booking %}
+          <div class="alert alert-info" style="margin-bottom:.75rem;">
+            {% trans "You already have an active booking:" %} {{ user_booking.start_date }} — {{ user_booking.end_date }}
+          </div>
+          <form method="post" action="{% url 'booking_cancel_html' user_booking.pk %}" style="margin:0 0 1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Cancel my booking" %}</button>
+          </form>
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+          <form id="book-form" method="post" action="{% url 'property_book_now' property.pk %}" data-price-month="{{ property.price|unlocalize }}" style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem; align-items:end;">
+            {% csrf_token %}
+            <div>
+              <label for="check_in">{% trans "Check-in date" %}</label>
+              <input id="check_in" name="check_in" type="date" value="{{ request.GET.start|default:'' }}" required>
+            </div>
+            <div>
+              <label for="check_out">{% trans "Check-out date" %}</label>
+              <input id="check_out" name="check_out" type="date" value="{{ request.GET.end|default:'' }}" required>
+            </div>
+            <div>
+              <label for="guests">{% trans "Guests" %}</label>
+              <input id="guests" name="guests" type="number" min="1" max="10" step="1" value="1" required>
+            </div>
+            <div>
+              <label>{% trans "Price per night" %}</label>
+              <div id="price_nightly" class="card" style="padding:.55rem .7rem;">—</div>
+            </div>
+            <div style="grid-column:1/-1; display:flex; justify-content:space-between; gap:.75rem;">
+              <div style="flex:1;">
+                <label>{% trans "Estimated total" %}</label>
+                <div id="price_total" class="card" style="padding:.55rem .7rem;">—</div>
+              </div>
+              <div style="display:flex; align-items:end;">
+                <button type="submit" class="btn btn-success" style="min-width:160px;">{% trans "Book now" %}</button>
+              </div>
+            </div>
+          </form>
+        {% else %}
+          <a href="{% url 'login_page' %}?next={% url 'property_detail' property.pk %}#book" class="btn btn-primary">{% trans "Sign in to book" %}</a>
+        {% endif %}
+      </div>
+    </article>
+
+    <article id="contact" class="card">
+      <div style="padding:1rem;">
+        <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Contact host" %}</h2>
+        <form id="contact-form" style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
           <div>
-            <label for="check_in" style="display:block; font-size:.9rem; color:#555;">Дата заезда</label>
-            <input id="check_in" name="check_in" type="date" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+            <label for="c_name">{% trans "Your name" %}</label>
+            <input id="c_name" name="name" type="text" required>
           </div>
           <div>
-            <label for="check_out" style="display:block; font-size:.9rem; color:#555;">Дата выезда</label>
-            <input id="check_out" name="check_out" type="date" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+            <label for="c_email">{% trans "Your email" %}</label>
+            <input id="c_email" name="email" type="email" required>
           </div>
           <div>
-            <label for="guests" style="display:block; font-size:.9rem; color:#555;">Гостей</label>
-            <input id="guests" name="guests" type="number" min="1" value="1" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;">
+            <label for="c_phone">{% trans "Phone (optional)" %}</label>
+            <input id="c_phone" name="phone" type="text">
           </div>
           <div style="grid-column:1/-1;">
-            <label for="note" style="display:block; font-size:.9rem; color:#555;">Сообщение владельцу (необязательно)</label>
-            <textarea id="note" name="note" rows="3" style="width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px;"></textarea>
+            <label for="c_msg">{% trans "Message" %}</label>
+            <textarea id="c_msg" name="message" rows="4" required></textarea>
           </div>
-          <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-            <button type="submit" style="padding:.6rem 1rem; background:#2563eb; color:#fff; border-radius:6px; border:none;">Забронировать</button>
-            <button id="contactBtn" type="button" style="padding:.6rem 1rem; background:#10b981; color:#fff; border-radius:6px; border:none;">Написать владельцу</button>
+          <div style="grid-column:1/-1; display:flex; gap:.5rem; align-items:center;">
+            <button type="submit" class="btn btn-muted">{% trans "Send message" %}</button>
+            <span id="contact-status"></span>
           </div>
         </form>
-        {% if user_booking %}
-          <a href="{% url 'booking_edit' user_booking.id %}" style="display:inline-block; margin-top:.5rem; padding:.5rem .9rem; background:#10b981; color:#fff; border-radius:8px; text-decoration:none;">Управление бронью</a>
-        {% endif %}
-      {% else %}
-        <div style="border:1px solid #e5e7eb; background:#f9fafb; padding:1rem; border-radius:6px; display:flex; gap:.5rem; flex-wrap:wrap;">
-          <span>Войдите в систему, чтобы забронировать.</span>
-          <a href="{% url 'admin:login' %}">Войти</a>
-          <button id="contactBtn" type="button" style="padding:.45rem .8rem; background:#10b981; color:#fff; border-radius:6px; border:none;">Написать владельцу без регистрации</button>
-        </div>
-      {% endif %}
-    </div>
-
-    <p style="margin-top:1rem;">⭐ {{ property.rating_avg|default_if_none:"—" }} ({{ property.reviews_total|default:"0" }})</p>
-  </div>
-</div>
-
-<hr style="margin:2rem 0;">
-
-<h3 style="margin:.5rem 0 1rem;">Отзывы</h3>
-<div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1rem;">
-  {% for r in property.reviews.all %}
-    <div style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fff;">
-      <div style="font-weight:600;">⭐ {{ r.rating }}</div>
-      <div style="margin-top:.25rem;">
-        {% if r.text %}{{ r.text }}
-        {% elif r.comment %}{{ r.comment }}
-        {% elif r.content %}{{ r.content }}
-        {% else %}—{% endif %}
       </div>
-      {% if r.created_at %}<div style="color:#666; font-size:.9rem; margin-top:.25rem;">{{ r.created_at }}</div>{% endif %}
-    </div>
-  {% empty %}
-    <div style="color:#666;">Пока нет отзывов.</div>
-  {% endfor %}
-</div>
-
-{% if not request.user.is_authenticated %}
-<div style="border:1px solid #ffe0a3; background:#fff7e0; color:#6a4b00; padding:1rem; border-radius:.5rem;">
-  Войдите, чтобы оставить отзыв.
-</div>
-{% elif user_can_review %}
-<form action="{% url 'property_add_review' property.pk %}" method="post" style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fbfbfb;">
-  {% csrf_token %}
-  <label for="rating" style="display:block; margin-bottom:.5rem;">Рейтинг (1–5):</label>
-  <select id="rating" name="rating" required style="padding:.4rem; margin-bottom:1rem;">
-    <option value="5">5 — отлично</option>
-    <option value="4">4 — хорошо</option>
-    <option value="3">3 — нормально</option>
-    <option value="2">2 — плохо</option>
-    <option value="1">1 — ужасно</option>
-  </select>
-  <label for="text" style="display:block; margin-bottom:.5rem;">Комментарий:</label>
-  <textarea id="text" name="text" rows="4" required style="width:100%; padding:.6rem;"></textarea>
-  <div style="margin-top:1rem;">
-    <button type="submit" style="padding:.6rem 1rem; background:#007bff; color:#fff; border-radius:5px; border:none;">Отправить отзыв</button>
+    </article>
   </div>
-</form>
-{% else %}
-<div style="border:1px solid #e5e7eb; background:#f9fafb; color:#374151; padding:1rem; border-radius:.5rem;">
-  Оставлять отзыв могут только клиенты с бронированием этого объекта.
-</div>
-{% endif %}
+</section>
 
-<div id="lightbox" style="position:fixed; inset:0; background:rgba(0,0,0,.9); display:none; align-items:center; justify-content:center; z-index:9999;">
-  <button id="lb-close" aria-label="close" style="position:absolute; top:16px; right:16px; font-size:24px; color:#fff; background:transparent; border:none; cursor:pointer;">✕</button>
-  <button id="lb-prev" aria-label="prev" style="position:absolute; left:16px; font-size:28px; color:#fff; background:transparent; border:none; cursor:pointer;">‹</button>
-  <img id="lb-img" alt="" style="max-width:90vw; max-height:85vh; object-fit:contain;">
-  <button id="lb-next" aria-label="next" style="position:absolute; right:16px; font-size:28px; color:#fff; background:transparent; border:none; cursor:pointer;">›</button>
+<div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.9); justify-content:center; align-items:center; z-index:9999; opacity:0; transition:opacity .2s ease;">
+  <button id="lb-close" style="position:absolute; top:16px; right:22px; font-size:32px; color:#fff; background:transparent; border:0; cursor:pointer; line-height:1;">×</button>
+  <button id="lb-prev" style="position:absolute; left:12px; font-size:40px; color:#fff; background:transparent; border:0; cursor:pointer; line-height:1;">‹</button>
+  <button id="lb-next" style="position:absolute; right:12px; font-size:40px; color:#fff; background:transparent; border:0; cursor:pointer; line-height:1;">›</button>
+  <img id="lb-img" src="" style="max-width:92%; max-height:92%; border-radius:12px; transform:translateX(0); opacity:0;">
 </div>
 
-<div id="contactModal" style="position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:10000;">
-  <div style="background:#fff; width:min(640px,92vw); border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.2); overflow:hidden;">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:.9rem 1.1rem; border-bottom:1px solid #e5e7eb;">
-      <div style="font-weight:700;">Связаться с владельцем</div>
-      <button id="contactClose" style="font-size:22px; border:none; background:transparent; cursor:pointer;">✕</button>
-    </div>
-    <div style="padding:1rem;">
-      <form id="contactForm" style="display:grid; gap:.75rem;">
-        {% csrf_token %}
-        <div>
-          <label for="c_name" style="display:block; font-size:.9rem; color:#555;">Имя</label>
-          <input id="c_name" name="name" type="text" value="{% if request.user.is_authenticated %}{{ request.user.get_username }}{% endif %}" required style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div>
-          <label for="c_email" style="display:block; font-size:.9rem; color:#555;">E-mail</label>
-          <input id="c_email" name="email" type="email" value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" required style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div>
-          <label for="c_phone" style="display:block; font-size:.9rem; color:#555;">Телефон</label>
-          <input id="c_phone" name="phone" type="text" placeholder="+49..." style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div>
-          <label for="c_msg" style="display:block; font-size:.9rem; color:#555;">Сообщение</label>
-          <textarea id="c_msg" name="message" rows="5" required style="width:100%; padding:.55rem; border:1px solid #ddd; border-radius:8px;"></textarea>
-        </div>
-        <div id="c_alert" style="display:none; padding:.6rem; border-radius:8px;"></div>
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-          <button type="submit" id="c_send" style="padding:.6rem 1rem; background:#2563eb; color:#fff; border-radius:8px; border:none;">Отправить</button>
-          <button type="button" id="c_cancel" style="padding:.6rem 1rem; background:#6b7280; color:#fff; border-radius:8px; border:none;">Отмена</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<style>
+.lb-enter{opacity:0; transform:translateX(var(--dx,0)) scale(.98)}
+.lb-enter-active{opacity:1; transform:translateX(0) scale(1); transition:opacity .22s ease, transform .22s ease}
+.lb-exit{opacity:1; transform:translateX(0) scale(1)}
+.lb-exit-active{opacity:0; transform:translateX(var(--dx,0)) scale(.98); transition:opacity .22s ease, transform .22s ease}
+</style>
+
+{# перевод, безопасный для вставки в JS #}
+{% trans "nights" as nights_label %}
 
 <script>
 (function(){
-  const root=document.documentElement;
-  const btn=document.getElementById('themeBtn');
-  const saved=localStorage.getItem('ui_theme')||'light';
-  root.setAttribute('data-theme', saved);
-  function nextTheme(t){return t==='light'?'dark':'light'}
-  if(btn){btn.addEventListener('click', ()=>{const cur=root.getAttribute('data-theme')||'light';const next=nextTheme(cur);root.setAttribute('data-theme', next);localStorage.setItem('ui_theme', next);});}
-})();
-(function(){
-  const thumbs = Array.from(document.querySelectorAll('.gallery-img'));
-  if(!thumbs.length) return;
-  const box = document.getElementById('lightbox');
-  const img = document.getElementById('lb-img');
-  const prev = document.getElementById('lb-prev');
-  const next = document.getElementById('lb-next');
-  const closeBtn = document.getElementById('lb-close');
-  let i = 0;
-  function show(k){
-    i = (k + thumbs.length) % thumbs.length;
-    img.src = thumbs[i].dataset.src || thumbs[i].src;
-    box.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-  thumbs.forEach((t, idx)=>{t.addEventListener('click', ()=>show(idx));});
-  prev.addEventListener('click', ()=>show(i-1));
-  next.addEventListener('click', ()=>show(i+1));
-  closeBtn.addEventListener('click', ()=>{box.style.display='none';document.body.style.overflow='';img.src='';});
-  box.addEventListener('click', (e)=>{if(e.target === box) closeBtn.click();});
-  window.addEventListener('keydown', (e)=>{if(box.style.display!=='flex') return; if(e.key==='Escape') closeBtn.click(); if(e.key==='ArrowLeft') prev.click(); if(e.key==='ArrowRight') next.click();});
-  if(location.hash === '#gallery') { const first = thumbs[0]; if(first) setTimeout(()=>first.scrollIntoView({behavior:'smooth', block:'start'}), 50); }
-})();
-(function(){
-  function getCookie(name){
-    const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
-    return m?m.pop():'';
-  }
-  const openBtn=document.getElementById('contactBtn');
-  const modal=document.getElementById('contactModal');
-  const closeBtn=document.getElementById('contactClose');
-  const cancelBtn=document.getElementById('c_cancel');
-  const form=document.getElementById('contactForm');
-  const alertBox=document.getElementById('c_alert');
-  const sendBtn=document.getElementById('c_send');
-
-  function open(){ modal.style.display='flex'; document.body.style.overflow='hidden'; }
-  function close(){ modal.style.display='none'; document.body.style.overflow=''; }
-  if(openBtn){ openBtn.addEventListener('click', open); }
-  if(closeBtn){ closeBtn.addEventListener('click', close); }
-  if(cancelBtn){ cancelBtn.addEventListener('click', close); }
-  if(modal){ modal.addEventListener('click', e=>{ if(e.target===modal) close(); }); }
-  window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.style.display==='flex') close(); });
-
+  function parseD(v){if(!v)return null;var a=v.split("-");if(a.length!==3)return null;return new Date(+a[0],+a[1]-1,+a[2]);}
+  function diffDays(a,b){var ms=24*60*60*1000;var d=Math.round((b-a)/ms);return d>0?d:0;}
+  function fmt(n){return new Intl.NumberFormat(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}).format(n);}
+  var form=document.getElementById("book-form");
   if(form){
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      alertBox.style.display='none';
-      sendBtn.disabled=true;
-      const payload={
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
-        phone: form.phone.value.trim(),
-        message: form.message.value.trim()
-      };
-      try{
-        const r=await fetch('/api/properties/{{ property.pk }}/contact/',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
-          credentials:'same-origin',
-          body: JSON.stringify(payload)
-        });
-        const j=await r.json().catch(()=>({}));
-        if(r.ok){
-          alertBox.style.display='block';
-          alertBox.style.background='#dcfce7';
-          alertBox.style.border='1px solid #bbf7d0';
-          alertBox.style.color='#166534';
-          alertBox.textContent='Сообщение отправлено владельцу.';
-          setTimeout(()=>{ close(); form.reset(); }, 800);
-        }else{
-          alertBox.style.display='block';
-          alertBox.style.background='#fee2e2';
-          alertBox.style.border='1px solid #fecaca';
-          alertBox.style.color='#991b1b';
-          alertBox.textContent = typeof j === 'object' ? JSON.stringify(j) : 'Ошибка отправки';
-        }
-      }catch(_){
-        alertBox.style.display='block';
-        alertBox.style.background='#fee2e2';
-        alertBox.style.border='1px solid #fecaca';
-        alertBox.style.color='#991b1b';
-        alertBox.textContent='Сетевой сбой';
-      }finally{
-        sendBtn.disabled=false;
-      }
+    var priceMonth=Number(form.dataset.priceMonth||"0");
+    var priceNight=priceMonth/30.0;
+    var inEl=document.getElementById("check_in");
+    var outEl=document.getElementById("check_out");
+    var nightlyBox=document.getElementById("price_nightly");
+    var totalBox=document.getElementById("price_total");
+    function recalc(){
+      nightlyBox.textContent=priceNight>0?"€ "+fmt(priceNight):"—";
+      var s=parseD(inEl.value), e=parseD(outEl.value);
+      if(!s||!e){totalBox.textContent="—";return;}
+      var nights=diffDays(s,e);
+      if(nights<=0){totalBox.textContent="—";return;}
+      var total=priceNight*nights;
+      totalBox.textContent="€ "+fmt(total)+" ("+nights+" {{ nights_label|escapejs }})";
+    }
+    ["change","input","blur"].forEach(function(ev){
+      inEl.addEventListener(ev,recalc);
+      outEl.addEventListener(ev,recalc);
     });
+    recalc();
   }
+})();
+(function(){
+  function getCookie(name){var v="; "+document.cookie;var p=v.split("; "+name+"=");if(p.length===2)return p.pop().split(";").shift();}
+  var form=document.getElementById("contact-form");
+  if(!form)return;
+  var status=document.getElementById("contact-status");
+  form.addEventListener("submit",function(e){
+    e.preventDefault();
+    status.textContent="";
+    var payload={name:document.getElementById("c_name").value.trim(),email:document.getElementById("c_email").value.trim(),phone:document.getElementById("c_phone").value.trim(),message:document.getElementById("c_msg").value.trim()};
+    fetch("/api/properties/{{ property.pk }}/contact/",{method:"POST",headers:{"Content-Type":"application/json","X-CSRFToken":getCookie("csrftoken")||""},body:JSON.stringify(payload),credentials:"same-origin"})
+      .then(function(r){return r.json().then(function(j){return{ok:r.ok,data:j};});})
+      .then(function(res){if(res.ok){status.className="";status.style.color="";status.textContent="{% trans 'Message sent' %}";form.reset();}else{status.style.color="";status.textContent=(res.data&&res.data.detail)||"{% trans 'Failed to send' %}";}})
+      .catch(function(){status.style.color="";status.textContent="{% trans 'Failed to send' %}";});
+  });
+})();
+(function(){
+  var grid=document.getElementById("gallery-grid");
+  if(!grid)return;
+  var imgs=[].slice.call(grid.querySelectorAll("img"));
+  var box=document.getElementById("lightbox");
+  var img=document.getElementById("lb-img");
+  var btnPrev=document.getElementById("lb-prev");
+  var btnNext=document.getElementById("lb-next");
+  var btnClose=document.getElementById("lb-close");
+  var idx=0;
+  function setOpacity(o){box.style.opacity=o;}
+  function openAt(i){
+    if(i<0)i=imgs.length-1;
+    if(i>=imgs.length)i=0;
+    idx=i;
+    img.style.transition="none";
+    img.style.opacity="0";
+    img.style.transform="translateX(0)";
+    img.src=imgs[i].src;
+    box.style.display="flex";
+    requestAnimationFrame(function(){setOpacity(1);img.className="lb-enter-active";img.style.transition="opacity .22s ease, transform .22s ease";img.style.opacity="1";});
+  }
+  function slideTo(next){
+    if(!imgs.length)return;
+    var dir=next?1:-1;
+    var to=idx+dir;
+    if(to<0)to=imgs.length-1;
+    if(to>=imgs.length)to=0;
+    var dxOut=(dir>0?"-24px":"24px");
+    var dxIn=(dir>0?"24px":"-24px");
+    img.style.setProperty("--dx",dxOut);
+    img.className="lb-exit-active";
+    setTimeout(function(){
+      img.style.transition="none";
+      img.style.setProperty("--dx",dxIn);
+      img.className="lb-enter";
+      img.src=imgs[to].src;
+      requestAnimationFrame(function(){
+        img.className="lb-enter-active";
+        img.style.transition="opacity .22s ease, transform .22s ease";
+        idx=to;
+      });
+    },200);
+  }
+  imgs.forEach(function(it,i){
+    it.addEventListener("click",function(){openAt(i);});
+  });
+  btnPrev.addEventListener("click",function(){slideTo(false);});
+  btnNext.addEventListener("click",function(){slideTo(true);});
+  btnClose.addEventListener("click",function(){setOpacity(0);setTimeout(function(){box.style.display="none";},200);});
+  box.addEventListener("click",function(e){if(e.target===box){setOpacity(0);setTimeout(function(){box.style.display="none";},200);}});
+  window.addEventListener("keydown",function(e){
+    if(box.style.display!=="flex")return;
+    if(e.key==="Escape"){setOpacity(0);setTimeout(function(){box.style.display="none";},200);}
+    if(e.key==="ArrowLeft"){slideTo(false);}
+    if(e.key==="ArrowRight"){slideTo(true);}
+  });
 })();
 </script>
+
 {% endblock %}

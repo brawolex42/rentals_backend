@@ -1,52 +1,337 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: rentals\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-19 17:52+0200\n"
+"PO-Revision-Date: 2025-08-18 12:00+0000\n"
 "Language: de\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-msgid "Аренда жилья — каталог"
-msgstr "Mietkatalog"
+#: .\src\bookings\models.py:38
+msgid "Check-out date must be after check-in date."
+msgstr ""
 
-msgid "Каталог недвижимости"
-msgstr "Immobilienkatalog"
+#: .\src\bookings\models.py:40 .\src\bookings\models.py:42
+#: .\src\bookings\views.py:76
+msgid "You cannot book in the past."
+msgstr ""
 
-msgid "Нет фото"
-msgstr "Keine Fotos"
+#: .\src\bookings\models.py:60 .\src\bookings\views.py:91
+msgid "These dates are already booked."
+msgstr ""
 
-msgid "Подробнее"
-msgstr "Details"
+#: .\src\bookings\models.py:102
+msgid "Booking is already cancelled."
+msgstr ""
 
-msgid "Нет объявлений"
-msgstr "Keine Inserate"
+#: .\src\bookings\models.py:104
+msgid "You cannot cancel this booking or it is too late."
+msgstr ""
 
-msgid "Заселиться"
-msgstr "Einziehen"
+#: .\src\bookings\models.py:109
+msgid "Booking cancelled successfully."
+msgstr ""
 
-msgid "Отзывы"
-msgstr "Bewertungen"
+#: .\src\bookings\views.py:72
+msgid "Invalid dates."
+msgstr ""
 
-msgid "Пока нет отзывов."
-msgstr "Noch keine Bewertungen."
+#: .\src\bookings\views.py:122
+msgid "Booking created."
+msgstr ""
 
-msgid "Рейтинг (1–5):"
-msgstr "Bewertung (1–5):"
+#: .\src\bookings\views.py:131 .\src\bookings\views.py:144
+#: .\src\bookings\views.py:174
+msgid "Forbidden"
+msgstr ""
 
-msgid "5 — отлично"
-msgstr "5 — ausgezeichnet"
+#: .\src\bookings\views.py:176
+msgid "Already cancelled"
+msgstr ""
 
-msgid "4 — хорошо"
-msgstr "4 — gut"
+#: .\src\bookings\views.py:178
+msgid "Completed booking cannot be cancelled"
+msgstr ""
 
-msgid "3 — нормально"
-msgstr "3 — ok"
+#: .\src\bookings\views.py:209
+msgid "Booking cancelled."
+msgstr ""
 
-msgid "2 — плохо"
-msgstr "2 — schlecht"
+#: .\src\bookings\views.py:211
+msgid "Unable to cancel booking."
+msgstr ""
 
-msgid "1 — ужасно"
-msgstr "1 — furchtbar"
+#: .\src\bookings\views.py:242
+msgid "Invalid dates"
+msgstr ""
 
-msgid "Комментарий:"
-msgstr "Kommentar:"
+#: .\src\bookings\views.py:245
+msgid "You cannot move booking to the past"
+msgstr ""
 
-msgid "Отправить отзыв"
-msgstr "Bewertung senden"
+#: .\src\bookings\views.py:259
+msgid "Dates are unavailable"
+msgstr ""
+
+#: .\src\bookings\views.py:283
+msgid "Booking updated."
+msgstr ""
+
+#: .\src\reviews\models.py:32 .\src\reviews\serializers.py:40
+msgid "Rating must be between 1 and 5."
+msgstr ""
+
+#: .\src\reviews\models.py:44 .\src\reviews\serializers.py:51
+msgid "You can leave a review only after your stay has started."
+msgstr ""
+
+#: .\src\reviews\serializers.py:38
+msgid "Invalid property."
+msgstr ""
+
+#: .\src\reviews\serializers.py:53
+msgid "You have already reviewed this property."
+msgstr ""
+
+#: .\src\reviews\views.py:28
+msgid "Thank you! Your review has been saved."
+msgstr ""
+
+#: .\src\reviews\views.py:31
+msgid "Could not save the review."
+msgstr ""
+
+#: .\templates\admin\bookings\booking\change_form.html:32
+#: .\templates\admin\bookings\booking\change_form.html:45
+msgid "Письмо владельцу"
+msgstr ""
+
+#: .\templates\admin\bookings\booking\change_form.html:34
+#: .\templates\admin\bookings\booking\change_form.html:47
+msgid "Отменить бронь"
+msgstr ""
+
+#: .\templates\base.html:18
+#, fuzzy
+#| msgid "Manage booking"
+msgid "My bookings"
+msgstr "Buchung verwalten"
+
+#: .\templates\base.html:19
+msgid "Account"
+msgstr ""
+
+#: .\templates\base.html:20
+msgid "Logout"
+msgstr ""
+
+#: .\templates\base.html:22 .\templates\users\login.html:3
+#: .\templates\users\login.html:5 .\templates\users\login.html:17
+msgid "Sign in"
+msgstr ""
+
+#: .\templates\base.html:23 .\templates\properties\property_list.html:17
+#: .\templates\users\register.html:3 .\templates\users\register.html:25
+msgid "Register"
+msgstr ""
+
+#: .\templates\properties\property_card.html:20
+#: .\templates\properties\property_list.html:72
+msgid "View"
+msgstr "Ansehen"
+
+#: .\templates\properties\property_card.html:23
+#: .\templates\properties\property_detail.html:121
+#: .\templates\properties\property_list.html:74
+msgid "Book now"
+msgstr ""
+
+#: .\templates\properties\property_card.html:26
+#: .\templates\properties\property_detail.html:133
+#: .\templates\properties\property_list.html:76
+msgid "Contact host"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:23
+msgid "Gallery"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:28
+#: .\templates\properties\property_list.html:32
+msgid "No photo"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:36
+msgid "Reviews"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:52
+msgid "No reviews yet."
+msgstr ""
+
+#: .\templates\properties\property_detail.html:59
+#, fuzzy
+#| msgid "Your booking"
+msgid "Your rating"
+msgstr "Ihre Buchung"
+
+#: .\templates\properties\property_detail.html:69
+msgid "Your review (optional)"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:73
+msgid "Submit review"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:84
+#, fuzzy
+#| msgid "Your booking"
+msgid "Booking"
+msgstr "Ihre Buchung"
+
+#: .\templates\properties\property_detail.html:88
+msgid "You already have an active booking:"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:92
+#, fuzzy
+#| msgid "Manage booking"
+msgid "Cancel my booking"
+msgstr "Buchung verwalten"
+
+#: .\templates\properties\property_detail.html:100
+msgid "Check-in date"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:104
+msgid "Check-out date"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:108
+msgid "Guests"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:112
+msgid "Price per night"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:117
+msgid "Estimated total"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:126
+msgid "Sign in to book"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:136
+msgid "Your name"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:140
+msgid "Your email"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:144
+msgid "Phone (optional)"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:148
+msgid "Message"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:152
+msgid "Send message"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:176
+msgid "nights"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:218
+msgid "Message sent"
+msgstr ""
+
+#: .\templates\properties\property_detail.html:218
+#: .\templates\properties\property_detail.html:219
+msgid "Failed to send"
+msgstr ""
+
+#: .\templates\properties\property_list.html:3
+#: .\templates\properties\property_list.html:13
+msgid "Find a cozy place to stay"
+msgstr "Finden Sie eine gemütliche Unterkunft"
+
+#: .\templates\properties\property_list.html:14
+msgid "Browse options, book online, and manage bookings in one click."
+msgstr "Durchsuchen, online buchen und Buchungen mit einem Klick verwalten."
+
+#: .\templates\properties\property_list.html:15
+msgid "Go to catalog"
+msgstr "Zum Katalog"
+
+#: .\templates\properties\property_list.html:43
+msgid "Your booking"
+msgstr "Ihre Buchung"
+
+#: .\templates\properties\property_list.html:45
+msgid "Occupied"
+msgstr ""
+
+#: .\templates\properties\property_list.html:47
+msgid "Available"
+msgstr "Frei"
+
+#: .\templates\properties\property_list.html:50
+msgid "My property"
+msgstr ""
+
+#: .\templates\properties\property_list.html:71
+msgid "Open"
+msgstr "Öffnen"
+
+#: .\templates\properties\property_list.html:78
+msgid "Manage booking"
+msgstr "Buchung verwalten"
+
+#: .\templates\properties\property_list.html:85
+#, fuzzy, python-format
+#| msgid "Your booking dates: %(start)s — %(end)s"
+msgid ""
+"\n"
+"            Your booking dates: %(start)s — %(end)s\n"
+"          "
+msgstr "Ihre Buchungsdaten: %(start)s — %(end)s"
+
+#: .\templates\properties\property_list.html:94
+msgid "No listings"
+msgstr ""
+
+#: .\templates\users\login.html:10 .\templates\users\register.html:10
+msgid "Email"
+msgstr ""
+
+#: .\templates\users\login.html:14 .\templates\users\register.html:18
+msgid "Password"
+msgstr ""
+
+#: .\templates\users\login.html:19
+msgid "Create a new account"
+msgstr ""
+
+#: .\templates\users\register.html:5
+msgid "Create account"
+msgstr ""
+
+#: .\templates\users\register.html:14
+msgid "Username (optional)"
+msgstr ""
+
+#: .\templates\users\register.html:22
+msgid "Repeat password"
+msgstr ""
+
+#: .\templates\users\register.html:27
+msgid "Already have an account? Sign in"
+msgstr ""

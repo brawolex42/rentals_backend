@@ -1,22 +1,48 @@
-"""
-URL configuration for rentals_backend project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# rentals_backend/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
+
+from src.properties.views import PublicCatalogView, PublicPropertyDetailView
+from src.reviews.views import submit_review
+import src.bookings.views as booking_views
+from src.accounts import views_html as account_views
+from src.shared.views import setlang_get
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("i18n/", include("django.conf.urls.i18n")),
+    path("lang/", setlang_get, name="setlang_get"),
+
+    path("api/accounts/", include("src.accounts.urls")),
+    path("api/properties/", include("src.properties.urls")),
+    path("api/bookings/", include("src.bookings.urls")),
+    path("api/reviews/", include("src.reviews.urls")),
+    path("api/analytics/", include("src.analytics.urls")),
 ]
+
+urlpatterns += i18n_patterns(
+    path("admin/", admin.site.urls),
+
+    path("", PublicCatalogView.as_view(), name="home"),
+    path("properties/<int:pk>/", PublicPropertyDetailView.as_view(), name="property_detail"),
+    path("properties/<int:pk>/book-now/", booking_views.book_now, name="property_book_now"),
+    path("properties/<int:pk>/review/", submit_review, name="property_add_review"),
+
+    path("register/", account_views.register_html, name="register_page"),
+    path("login/", account_views.login_html, name="login_page"),
+    path("logout/", account_views.logout, name="logout"),
+
+    path("my/bookings/", booking_views.MyBookingsView.as_view(), name="my_bookings"),
+    path("my/bookings/<int:pk>/edit/", booking_views.EditBookingView.as_view(), name="booking_edit"),
+    path("my/bookings/<int:pk>/cancel/", booking_views.cancel_booking_html, name="booking_cancel_html"),
+
+    path("account/", account_views.account_dashboard, name="account_dashboard"),
+    path("account/delete/", account_views.delete_account, name="account_delete"),
+
+    prefix_default_language=False,
+)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

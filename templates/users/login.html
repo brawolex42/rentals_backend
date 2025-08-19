@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Sign in" %}{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 1rem; font-size:1.5rem;">{% trans "Sign in" %}</h1>
+<form method="post" style="display:grid; gap:.75rem; max-width:420px;">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next|default:'' }}">
+  <div>
+    <label for="email" style="display:block; margin:0 0 .25rem;">{% trans "Email" %}</label>
+    <input id="email" name="email" type="email" value="{{ email|default:'' }}" required style="width:100%; padding:.6rem .7rem; border:1px solid #d1d5db; border-radius:8px;">
+  </div>
+  <div>
+    <label for="password" style="display:block; margin:0 0 .25rem;">{% trans "Password" %}</label>
+    <input id="password" name="password" type="password" required style="width:100%; padding:.6rem .7rem; border:1px solid #d1d5db; border-radius:8px;">
+  </div>
+  <button type="submit" style="padding:.7rem 1rem; border:0; border-radius:10px; background:#2563eb; color:#fff; cursor:pointer;">{% trans "Sign in" %}</button>
+  <div style="margin-top:.25rem;">
+    <a href="{% url 'register_page' %}{% if next %}?next={{ next|urlencode }}{% endif %}">{% trans "Create a new account" %}</a>
+  </div>
+</form>
+{% endblock %}

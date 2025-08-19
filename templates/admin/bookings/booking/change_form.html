@@ -1,20 +1,51 @@
 {% extends "admin/change_form.html" %}
 {% load i18n %}
-{% block submit_buttons_top %}
-<div class="submit-row">
-  <a class="button" href="{% url 'admin:bookings_booking_send_owner_email' original.pk %}">Письмо владельцу</a>
-  {% if original.status != 'CANCELLED' and original.status != 'COMPLETED' %}
-    <a class="button deletelink" href="{% url 'admin:bookings_booking_cancel' original.pk %}">Отменить бронь</a>
-  {% endif %}
-</div>
-{{ block.super }}
+
+{% block extrahead %}
+  {{ block.super }}
+  <style>
+    .submit-row.custom-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      align-items:center;
+      justify-content:flex-start;
+      padding:.6rem 1rem;
+      margin:0 0 10px 0;
+    }
+    .submit-row.custom-row a.button,
+    .submit-row.custom-row a.deletelink,
+    .submit-row.custom-row .button{
+      float:none !important;
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      margin:0;
+    }
+  </style>
 {% endblock %}
-{% block submit_buttons_bottom %}
-{{ block.super }}
-<div class="submit-row">
-  <a class="button" href="{% url 'admin:bookings_booking_send_owner_email' original.pk %}">Письмо владельцу</a>
-  {% if original.status != 'CANCELLED' and original.status != 'COMPLETED' %}
-    <a class="button deletelink" href="{% url 'admin:bookings_booking_cancel' original.pk %}">Отменить бронь</a>
+
+{% block submit_buttons_top %}
+  {# Кастомные действия только на странице изменения, не на добавлении #}
+  {% if original and original.pk %}
+    <div class="submit-row custom-row">
+      <a class="button" href="{% url 'admin:bookings_booking_send_owner_email' original.pk %}">{% trans "Письмо владельцу" %}</a>
+      {% if original.status and original.status != 'CANCELLED' and original.status != 'COMPLETED' %}
+        <a class="button deletelink" href="{% url 'admin:bookings_booking_cancel' original.pk %}">{% trans "Отменить бронь" %}</a>
+      {% endif %}
+    </div>
   {% endif %}
-</div>
+  {{ block.super }}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+  {{ block.super }}
+  {% if original and original.pk %}
+    <div class="submit-row custom-row">
+      <a class="button" href="{% url 'admin:bookings_booking_send_owner_email' original.pk %}">{% trans "Письмо владельцу" %}</a>
+      {% if original.status and original.status != 'CANCELLED' and original.status != 'COMPLETED' %}
+        <a class="button deletelink" href="{% url 'admin:bookings_booking_cancel' original.pk %}">{% trans "Отменить бронь" %}</a>
+      {% endif %}
+    </div>
+  {% endif %}
 {% endblock %}
