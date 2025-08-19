@@ -204,11 +204,11 @@ class CancelBookingView(APIView):
 @require_POST
 def cancel_booking_html(request, pk: int):
     b = get_object_or_404(Booking.objects.select_related('property__owner', 'tenant'), pk=pk, tenant=request.user)
-    ok, _ = b.cancel(request.user)
+    ok, msg = b.cancel(request.user)
     if ok:
-        messages.success(request, _("Booking cancelled."))
+        messages.success(request, msg)
     else:
-        messages.error(request, _("Unable to cancel booking."))
+        messages.error(request, msg)
     return redirect(reverse('my_bookings'))
 
 class MyBookingsView(LoginRequiredMixin, TemplateView):
@@ -229,20 +229,22 @@ class EditBookingView(LoginRequiredMixin, View):
 
     def post(self, request, pk: int):
         b = get_object_or_404(Booking.objects.select_related('property'), pk=pk, tenant=request.user)
+
         def parse_date(s):
             try:
                 return datetime.strptime(s, "%Y-%m-%d").date()
             except Exception:
                 return None
+
         start_str = request.POST.get('start_date')
         end_str = request.POST.get('end_date')
         new_start = parse_date(start_str) if start_str else None
         new_end = parse_date(end_str) if end_str else None
         if not new_start or not new_end or new_end <= new_start:
-            return render(request, self.template_name, {'booking': b, 'error': _('Invalid dates')})
+            return render(request, self.template_name, {'booking': b, 'error': _("Invalid dates")})
         today = timezone.localdate()
         if new_start < today:
-            return render(request, self.template_name, {'booking': b, 'error': _('You cannot move booking to the past')})
+            return render(request, self.template_name, {'booking': b, 'error': _("You cannot move booking to the past")})
         overlapping_statuses = [s for s in {
             _status_value("PENDING"),
             _status_value("CONFIRMED"),
@@ -256,7 +258,7 @@ class EditBookingView(LoginRequiredMixin, View):
             qs = qs.filter(status__in=overlapping_statuses)
         qs = qs.filter(start_date__lt=new_end, end_date__gt=new_start)
         if qs.exists():
-            return render(request, self.template_name, {'booking': b, 'error': _('Dates are unavailable')})
+            return render(request, self.template_name, {'booking': b, 'error': _("Dates are unavailable")})
         b.start_date = new_start
         b.end_date = new_end
         if new_start <= today <= new_end:
