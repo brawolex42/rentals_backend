@@ -1,97 +1,111 @@
 {% extends "base.html" %}
 {% load i18n l10n %}
-{% block title %}{% trans "Find a cozy place to stay" %}{% endblock %}
+{% block title %}{% trans "Cozy rental housing" %}{% endblock %}
 {% block content %}
 
-<section class="card" style="overflow:hidden; margin:0 0 1rem;">
-  {% with p=properties|first %}
-    {% if p and p.images.first and p.images.first.image %}
-      <img src="{{ p.images.first.image.url }}" alt="" style="width:100%; height:260px; object-fit:cover;">
-    {% endif %}
-  {% endwith %}
-  <div style="padding:clamp(20px,4vw,36px);">
-    <h2 style="margin:0 0 .35rem; font-size:clamp(22px,4vw,34px);">{% trans "Find a cozy place to stay" %}</h2>
-    <p class="muted" style="margin:0 0 .9rem;">{% trans "Browse options, book online, and manage bookings in one click." %}</p>
-    <a href="#list" class="btn btn-success">{% trans "Go to catalog" %}</a>
-    {% if not request.user.is_authenticated %}
-      <a href="{% url 'register_page' %}" class="btn btn-primary" style="margin-left:.5rem;">{% trans "Register" %}</a>
-    {% endif %}
+<section aria-label="hero" style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem;">
+  <div style="height: clamp(240px, 40vw, 420px); background: url('/media/properties/2025/08/19/pexels_47_453068.jpg') center/cover no-repeat;"></div>
+  <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.0) 20%, rgba(0,0,0,.55) 70%);"></div>
+  <div style="position:absolute; inset:0; display:flex; align-items:flex-end;">
+    <div style="padding:1rem; width:100%; color:#fff;">
+      <h1 style="margin:0 0 .35rem; font-weight:700; font-size:clamp(22px,4vw,36px); line-height:1.2;">
+        {% trans "Cozy rental housing" %}
+      </h1>
+      <p style="margin:.1rem 0 0; opacity:.95;">
+        {% trans "Browse listings, book online, and manage bookings in one click." %}
+      </p>
+    </div>
   </div>
 </section>
 
-<a id="list"></a>
-<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:1rem;">
-  {% for property in properties %}
-  <article class="card" style="display:flex; flex-direction:column; overflow:hidden;">
-    {% with first=property.images.first %}
-      {% if first and first.image %}
-        <a href="{% url 'property_detail' property.pk %}">
-          <img src="{{ first.image.url }}" alt="{{ property.title }}" style="width:100%; height:190px; object-fit:cover;">
-        </a>
+<section class="card" style="margin-bottom:1rem;">
+  <div style="padding:1rem;">
+    <form method="get" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:.6rem; align-items:end;">
+      <div>
+        <label for="q">{% trans "Search" %}</label>
+        <input id="q" type="text" name="q" value="{{ q }}" placeholder="{% trans 'City, district, title...' %}">
+      </div>
+      <div>
+        <label for="city">{% trans "City" %}</label>
+        <select id="city" name="city">
+          <option value="">{% trans "Any" %}</option>
+          {% for c in cities %}
+            <option value="{{ c }}" {% if c == city %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="ptype">{% trans "Type" %}</label>
+        <select id="ptype" name="ptype" {% if not type_field %}disabled{% endif %}>
+          <option value="">{% trans "Any" %}</option>
+          {% for t in ptypes %}
+            <option value="{{ t }}" {% if t == ptype %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="sort">{% trans "Sort" %}</label>
+        <select id="sort" name="sort">
+          <option value="" {% if not sort %}selected{% endif %}>{% trans "Best rated" %}</option>
+          <option value="views7" {% if sort == "views7" %}selected{% endif %}>{% trans "Views (7d)" %}</option>
+          <option value="views" {% if sort == "views" %}selected{% endif %}>{% trans "Views (total)" %}</option>
+        </select>
+      </div>
+      <div>
+        <button class="btn btn-primary" type="submit" style="min-width:140px;">{% trans "Search" %}</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section style="display:grid; gap:1rem;">
+  {% if properties %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1rem;">
+      {% for p in properties %}
+        <article class="card" style="overflow:hidden; position:relative;">
+          <a href="{% url 'property_detail' p.pk %}">
+            {% with first=p.images.all.0 %}
+              {% if first %}
+                <img src="{{ first.image.url }}" alt="{{ p.title }}" style="width:100%; height:180px; object-fit:cover;">
+              {% else %}
+                <div style="width:100%; height:180px; display:flex; align-items:center; justify-content:center;">{% trans "No photo" %}</div>
+              {% endif %}
+            {% endwith %}
+          </a>
+          <div style="position:absolute; top:8px; left:8px; display:flex; gap:.3rem; flex-wrap:wrap;">
+            <span class="badge" style="background:#111827; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">{% trans "7d" %}: {{ p.views_7d|default:"0" }}</span>
+            <span class="badge" style="background:#374151; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">{% trans "Total" %}: {{ p.views_total|default:"0" }}</span>
+          </div>
+          <div style="padding:.8rem;">
+            <a href="{% url 'property_detail' p.pk %}" style="text-decoration:none;"><h3 style="margin:.1rem 0 .4rem; font-size:1rem; line-height:1.3;">{{ p.title }}</h3></a>
+            <div class="muted" style="font-size:.9rem;">
+              {% if p.city %}{{ p.city }}{% if p.display_district %}, {{ p.display_district }}{% endif %}{% endif %}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:.4rem;">
+              <div class="price">€ {% localize on %}{{ p.price|floatformat:2 }}{% endlocalize %}</div>
+              <div class="rating">⭐ {{ p.rating_avg|floatformat:1|default:"—" }} ({{ p.reviews_total|default:"0" }})</div>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    <div style="display:flex; justify-content:center; align-items:center; gap:.4rem; margin-top:1rem;">
+      {% if page_obj.has_previous %}
+        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">{% trans "Prev" %}</a>
       {% else %}
-        <div style="width:100%; height:190px; display:flex; align-items:center; justify-content:center;">{% trans "No photo" %}</div>
+        <button class="btn btn-muted" disabled>{% trans "Prev" %}</button>
       {% endif %}
-    {% endwith %}
-
-    <div style="padding:1rem; display:flex; flex-direction:column; gap:.6rem;">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
-        <h3 style="margin:0; font-size:1.05rem;">
-          <a href="{% url 'property_detail' property.pk %}" style="text-decoration:none;">{{ property.title }}</a>
-        </h3>
-        <div style="display:flex; gap:.35rem; flex-wrap:wrap;">
-          {% if request.user.is_authenticated and property.user_booking %}
-            <span class="badge">{% trans "Your booking" %}</span>
-          {% elif property.other_booking %}
-            <span class="badge">{% trans "Occupied" %}</span>
-          {% else %}
-            <span class="badge">{% trans "Available" %}</span>
-          {% endif %}
-          {% if request.user.is_authenticated and property.owner_id == request.user.id %}
-            <span class="badge">{% trans "My property" %}</span>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="muted" style="display:flex; gap:.6rem; flex-wrap:wrap;">
-        {% if property.city %}
-          <span>{{ property.city }}{% if property.district and property.district|length > 2 %}, {{ property.district }}{% endif %}</span>
-        {% endif %}
-      </div>
-
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:.75rem;">
-        <span class="price">
-          {% localize on %}€ {{ property.price|floatformat:2 }}{% endlocalize %}
-        </span>
-        <span class="rating">
-          ⭐ {{ property.rating_avg|floatformat:1|default_if_none:"—" }} ({{ property.reviews_total|default:"0" }})
-        </span>
-      </div>
-
-      <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.1rem;">
-        <a href="{% url 'property_detail' property.pk %}" class="pill">{% trans "Open" %}</a>
-        <a href="{% url 'property_detail' property.pk %}#gallery" class="pill">{% trans "View" %}</a>
-        {% if request.user.is_authenticated and not property.user_booking and not property.other_booking %}
-          <a href="{% url 'property_detail' property.pk %}#book" class="pill">{% trans "Book now" %}</a>
-        {% endif %}
-        <a href="{% url 'property_detail' property.pk %}#contact" class="pill">{% trans "Contact host" %}</a>
-        {% if request.user.is_authenticated and property.user_booking %}
-          <a href="{% url 'booking_edit' property.user_booking.id %}" class="pill">{% trans "Manage booking" %}</a>
-        {% endif %}
-      </div>
-
-      {% if request.user.is_authenticated and property.user_booking %}
-        <div class="alert alert-info" style="margin-top:.25rem;">
-          {% localize on %}
-          {% blocktrans with start=property.user_booking.start_date|date:"DATE_FORMAT" end=property.user_booking.end_date|date:"DATE_FORMAT" %}
-            Your booking dates: {{ start }} — {{ end }}
-          {% endblocktrans %}
-          {% endlocalize %}
-        </div>
+      <span class="muted" style="padding:0 .5rem;">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+      {% else %}
+        <button class="btn btn-muted" disabled>{% trans "Next" %}</button>
       {% endif %}
     </div>
-  </article>
-  {% empty %}
-    <p>{% trans "No listings" %}</p>
-  {% endfor %}
-</div>
+  {% else %}
+    <div class="card" style="padding:1rem; text-align:center;">{% trans "Nothing found" %}</div>
+  {% endif %}
+</section>
+
 {% endblock %}

@@ -1,17 +1,24 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-20 19:42+0200\n"
-"PO-Revision-Date: 2025-08-20 00:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: de\n"
-"Language: de\n"
-"MIME-Version: text/plain; charset=UTF-8\n"
+"POT-Creation-Date: 2025-08-20 19:21+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 #: .\src\bookings\models.py:38
 msgid "Check-out date must be after check-in date."
 msgstr ""
@@ -136,124 +143,119 @@ msgid "View"
 msgstr ""
 
 #: .\templates\properties\property_card.html:23
-#: .\templates\properties\property_detail.html:150
+#: .\templates\properties\property_detail.html:142
 msgid "Book now"
 msgstr ""
 
 #: .\templates\properties\property_card.html:26
-#: .\templates\properties\property_detail.html:162
+#: .\templates\properties\property_detail.html:154
 msgid "Contact host"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:4
-#: .\templates\properties\property_detail.html:24
-msgid "Cozy rental housing"
-msgstr "Gemütliche Mietunterkunft"
-
-#: .\templates\properties\property_detail.html:33
+#: .\templates\properties\property_detail.html:25
 msgid "month"
-msgstr "Monat"
+msgstr ""
 
-#: .\templates\properties\property_detail.html:39
+#: .\templates\properties\property_detail.html:31
 #: .\templates\properties\property_list.html:35
 msgid "Views (7d)"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:52
+#: .\templates\properties\property_detail.html:44
 msgid "Gallery"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:57
+#: .\templates\properties\property_detail.html:49
 #: .\templates\properties\property_list.html:56
 msgid "No photo"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:65
+#: .\templates\properties\property_detail.html:57
 msgid "Reviews"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:81
+#: .\templates\properties\property_detail.html:73
 msgid "No reviews yet."
 msgstr ""
 
-#: .\templates\properties\property_detail.html:88
+#: .\templates\properties\property_detail.html:80
 msgid "Your rating"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:98
+#: .\templates\properties\property_detail.html:90
 msgid "Your review (optional)"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:102
+#: .\templates\properties\property_detail.html:94
 msgid "Submit review"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:113
+#: .\templates\properties\property_detail.html:105
 msgid "Booking"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:117
+#: .\templates\properties\property_detail.html:109
 msgid "You already have an active booking:"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:121
+#: .\templates\properties\property_detail.html:113
 msgid "Cancel my booking"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:129
+#: .\templates\properties\property_detail.html:121
 msgid "Check-in date"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:133
+#: .\templates\properties\property_detail.html:125
 msgid "Check-out date"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:137
+#: .\templates\properties\property_detail.html:129
 msgid "Guests"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:141
+#: .\templates\properties\property_detail.html:133
 msgid "Price per night"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:146
+#: .\templates\properties\property_detail.html:138
 msgid "Estimated total"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:155
+#: .\templates\properties\property_detail.html:147
 msgid "Sign in to book"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:165
+#: .\templates\properties\property_detail.html:157
 msgid "Your name"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:169
+#: .\templates\properties\property_detail.html:161
 msgid "Your email"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:173
+#: .\templates\properties\property_detail.html:165
 msgid "Phone (optional)"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:177
+#: .\templates\properties\property_detail.html:169
 msgid "Message"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:181
+#: .\templates\properties\property_detail.html:173
 msgid "Send message"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:204
+#: .\templates\properties\property_detail.html:196
 msgid "nights"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:246
+#: .\templates\properties\property_detail.html:238
 msgid "Message sent"
 msgstr ""
 
-#: .\templates\properties\property_detail.html:246
-#: .\templates\properties\property_detail.html:247
+#: .\templates\properties\property_detail.html:238
+#: .\templates\properties\property_detail.html:239
 msgid "Failed to send"
 msgstr ""
 
@@ -372,121 +374,3 @@ msgstr ""
 #: .\templates\users\register.html:27
 msgid "Already have an account? Sign in"
 msgstr ""
-msgid "Cozy rental housing"
-msgstr "Gemütliche Mietunterkunft"
-
-msgid "month"
-msgstr "Monat"
-
-msgid "Gallery"
-msgstr "Galerie"
-
-msgid "Reviews"
-msgstr "Bewertungen"
-
-msgid "No photo"
-msgstr "Kein Foto"
-
-msgid "No reviews yet."
-msgstr "Noch keine Bewertungen."
-
-msgid "Your rating"
-msgstr "Ihre Bewertung"
-
-msgid "Your review (optional)"
-msgstr "Ihre Bewertung (optional)"
-
-msgid "Submit review"
-msgstr "Bewertung senden"
-
-msgid "Booking"
-msgstr "Buchung"
-
-msgid "You already have an active booking:"
-msgstr "Sie haben bereits eine aktive Buchung:"
-
-msgid "Cancel my booking"
-msgstr "Meine Buchung stornieren"
-
-msgid "Check-in date"
-msgstr "Anreisedatum"
-
-msgid "Check-out date"
-msgstr "Abreisedatum"
-
-msgid "Guests"
-msgstr "Gäste"
-
-msgid "Price per night"
-msgstr "Preis pro Nacht"
-
-msgid "Estimated total"
-msgstr "Voraussichtlicher Gesamtpreis"
-
-msgid "Book now"
-msgstr "Jetzt buchen"
-
-msgid "Sign in to book"
-msgstr "Zum Buchen anmelden"
-
-msgid "Contact host"
-msgstr "Gastgeber kontaktieren"
-
-msgid "Your name"
-msgstr "Ihr Name"
-
-msgid "Your email"
-msgstr "Ihre E-Mail"
-
-msgid "Phone (optional)"
-msgstr "Telefon (optional)"
-
-msgid "Message"
-msgstr "Nachricht"
-
-msgid "Send message"
-msgstr "Nachricht senden"
-
-msgid "Message sent"
-msgstr "Nachricht gesendet"
-
-msgid "Failed to send"
-msgstr "Senden fehlgeschlagen"
-
-msgid "Views (7d)"
-msgstr "Aufrufe (7 Tage)"
-
-msgid "nights"
-msgstr "Nächte"
-msgid "Contact details"
-msgstr "Kontaktdaten"
-
-msgid "Phone"
-msgstr "Telefon"
-
-msgid "Email"
-msgstr "E-Mail"
-
-msgid "Website"
-msgstr "Webseite"
-
-msgid "Available hours"
-msgstr "Erreichbar"
-
-msgid "Contact host"
-msgstr "Gastgeber kontaktieren"
-
-msgid "Your name"
-msgstr "Ihr Name"
-
-msgid "Your email"
-msgstr "Ihre E-Mail"
-
-msgid "Phone (optional)"
-msgstr "Telefon (optional)"
-
-msgid "Message"
-msgstr "Nachricht"
-
-msgid "Send message"
-msgstr "Nachricht senden"

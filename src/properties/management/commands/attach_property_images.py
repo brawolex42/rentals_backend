@@ -8,7 +8,7 @@ from pathlib import Path
 import random
 import uuid
 
-# Попробуем Pillow для генерации плейсхолдеров
+
 try:
     from PIL import Image, ImageDraw, ImageFont
     PIL_OK = True
@@ -52,7 +52,7 @@ def _ensure_pool(img_dir: str | None):
     if pool:
         return pool
 
-    # Плейсхолдеры, если ничего не нашли
+
     if not PIL_OK:
         return []
 

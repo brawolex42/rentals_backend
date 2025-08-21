@@ -35,7 +35,7 @@
     {% if messages %}
       <div aria-live="polite" style="margin:0 0 1rem; display:grid; gap:.5rem;">
         {% for message in messages %}
-          <div style="padding:.6rem .8rem; border-radius:8px; {% if message.tags == 'error' %}background:#fee2e2; color:#7f1d1d; border:1px solid #fecaca{% elif message.tags == 'success' %}background:#dcfce7; color:#065f46; border:1px solid #bbf7d0{% else %}background:#e5e7eb; color:#111827; border:1px solid #d1d5db{% endif %};">
+          <div style="padding:.6rem .8rem; border-radius:8px; {% if message.level_tag == 'error' %}background:#fee2e2; color:#7f1d1d; border:1px solid #fecaca{% elif message.level_tag == 'success' %}background:#dcfce7; color:#065f46; border:1px solid #bbf7d0{% else %}background:#e5e7eb; color:#111827; border:1px solid #d1d5db{% endif %}">
             {{ message }}
           </div>
         {% endfor %}

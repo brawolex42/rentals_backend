@@ -1,33 +1,41 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 *.so
 *.egg-info/
-.eggs/
-
-# Django
-*.sqlite3
-db.sqlite3
-identifier.sqlite
-media/
-!media/.gitkeep
-staticfiles/
-.env
-.env.local
-
-# Logs / misc
+*.egg
 *.log
-*.pid
-
-# Virtualenv
-.venv/
-venv/
-ENV/
 
 # IDE
-.idea/
 .vscode/
-*.iml
+.idea/
 
-# Docker
-docker-data/
+# OS
+.DS_Store
+Thumbs.db
+
+# Venv
+.venv/
+venv/
+
+# Env
+.env
+.env.local
+.env.*
+!.env.example
+
+# Django
+db.sqlite3
+identifier.sqlite
+staticfiles/
+media/
+
+# Node/yarn (на всякий случай)
+node_modules/
+
+# Tests/coverage
+.pytest_cache/
+.coverage
+htmlcov/

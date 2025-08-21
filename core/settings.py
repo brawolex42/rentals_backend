@@ -36,20 +36,26 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "src.analytics.middleware.EnsureSessionMiddleware",
     "src.analytics.middleware.SearchQueryLoggingMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+USE_WHITENOISE = os.getenv("USE_WHITENOISE", "false").lower() == "true"
+if USE_WHITENOISE:
+    try:
+        import whitenoise  # noqa: F401
+        MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+    except Exception:
+        USE_WHITENOISE = False  # пакет не установлен — не используем
 
 ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            BASE_DIR / "templates",
-            BASE_DIR / "src" / "templates",
-        ],
+        "DIRS": [BASE_DIR / "templates", BASE_DIR / "src" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -124,10 +130,11 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "src" / "shared",
-]
+STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "src" / "shared"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+if USE_WHITENOISE and not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 

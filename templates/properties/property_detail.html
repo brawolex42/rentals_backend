@@ -1,22 +1,48 @@
 {% extends "base.html" %}
 {% load i18n l10n %}
-{% block title %}{{ property.title }}{% endblock %}
+{% block title %}{{ property.title|default:_("Cozy rental housing") }}{% endblock %}
+
 {% block content %}
+
+{% with first=property.images.all.0 %}
+<section aria-label="hero" style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem;">
+  <div style="
+    height: clamp(220px, 38vw, 420px);
+    background:
+      {% if first %}url('{{ first.image.url }}'){% else %}url('/media/properties/2025/08/19/pexels_47_453068.jpg'){% endif %}
+      center/cover no-repeat;">
+  </div>
+  <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.0) 20%, rgba(0,0,0,.55) 70%);"></div>
+  <div style="position:absolute; inset:0; display:flex; align-items:flex-end;">
+    <div style="padding:1rem; width:100%; color:#fff;">
+      <h1 style="margin:0 0 .35rem; font-weight:700; font-size:clamp(22px,4vw,36px); line-height:1.2;">
+        {{ property.title|default:_("Cozy rental housing") }}
+      </h1>
+      <div style="display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; font-size:.95rem; opacity:.95;">
+        {% if property.city %}
+          <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
+            {{ property.city }}{% if property.display_district %}, {{ property.display_district }}{% endif %}
+          </span>
+        {% endif %}
+        {% if property.price %}
+        <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
+          € {% localize on %}{{ property.price|floatformat:2 }}{% endlocalize %} / {% trans "month" %}
+        </span>
+        {% endif %}
+        <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
+          ⭐ {{ property.rating_avg|floatformat:1|default:"—" }} ({{ property.reviews_total|default:"0" }})
+        </span>
+        <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
+          {% trans "Views (7d)" %}: {{ views_count|default:"0" }}
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+{% endwith %}
 
 <section style="display:grid; grid-template-columns:1.2fr .8fr; gap:1rem;">
   <div style="display:grid; gap:1rem;">
-    <article class="card">
-      <div style="padding:1rem;">
-        <h1 style="margin:0 0 .4rem; font-size:clamp(20px,3vw,28px);">{{ property.title }}</h1>
-        <div class="muted" style="display:flex; gap:.6rem; flex-wrap:wrap;">
-          {% if property.city %}<span>{{ property.city }}{% if property.display_district %}, {{ property.display_district }}{% endif %}</span>{% endif %}
-        </div>
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:.75rem; margin-top:.6rem;">
-          <span class="price">€ {% localize on %}{{ property.price|floatformat:2 }}{% endlocalize %}</span>
-          <span class="rating">⭐ {{ property.rating_avg|floatformat:1|default:"—" }} ({{ property.reviews_total|default:"0" }})</span>
-        </div>
-      </div>
-    </article>
 
     <article id="gallery" class="card" style="overflow:hidden;">
       <div style="padding:1rem;">
@@ -34,6 +60,7 @@
     <article id="reviews" class="card">
       <div style="padding:1rem;">
         <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Reviews" %}</h2>
+
         {% if reviews %}
           <div style="display:grid; gap:.6rem; margin:0 0 1rem;">
             {% for r in reviews %}
@@ -53,7 +80,7 @@
         {% endif %}
 
         {% if request.user.is_authenticated and user_can_review %}
-          <form method="post" action="{% url 'property_add_review' property.pk %}" style="display:grid; gap:.6rem; margin-top:.5rem;">
+          <form method="post" action="{% if property and property.pk %}{% url 'property_add_review' property.pk %}{% else %}#{% endif %}" style="display:grid; gap:.6rem; margin-top:.5rem;">
             {% csrf_token %}
             <div>
               <label for="rev_rating">{% trans "Your rating" %}</label>
@@ -70,7 +97,7 @@
               <textarea id="rev_text" name="text" rows="4"></textarea>
             </div>
             <div>
-              <button type="submit" class="btn btn-primary">{% trans "Submit review" %}</button>
+              <button type="submit" class="btn btn-primary" {% if not property or not property.pk %}disabled{% endif %}>{% trans "Submit review" %}</button>
             </div>
           </form>
         {% endif %}
@@ -94,7 +121,13 @@
         {% endif %}
 
         {% if request.user.is_authenticated %}
-          <form id="book-form" method="post" action="{% url 'property_book_now' property.pk %}" data-price-month="{{ property.price|unlocalize }}" style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem; align-items:end;">
+          <form
+            id="book-form"
+            method="post"
+            action="{% if property and property.pk %}{% url 'property_book_now' property.pk %}{% else %}#{% endif %}"
+            data-price-month="{{ property.price|unlocalize }}"
+            style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem; align-items:end;"
+          >
             {% csrf_token %}
             <div>
               <label for="check_in">{% trans "Check-in date" %}</label>
@@ -118,12 +151,19 @@
                 <div id="price_total" class="card" style="padding:.55rem .7rem;">—</div>
               </div>
               <div style="display:flex; align-items:end;">
-                <button type="submit" class="btn btn-success" style="min-width:160px;">{% trans "Book now" %}</button>
+                <button type="submit" class="btn btn-success" style="min-width:160px;" {% if not property or not property.pk %}disabled{% endif %}>
+                  {% trans "Book now" %}
+                </button>
               </div>
             </div>
           </form>
         {% else %}
-          <a href="{% url 'login_page' %}?next={% url 'property_detail' property.pk %}#book" class="btn btn-primary">{% trans "Sign in to book" %}</a>
+          <a
+            href="{% url 'login_page' %}?next={% if property and property.pk %}{% url 'property_detail' property.pk %}{% else %}/{% endif %}#book"
+            class="btn btn-primary"
+          >
+            {% trans "Sign in to book" %}
+          </a>
         {% endif %}
       </div>
     </article>
@@ -131,7 +171,32 @@
     <article id="contact" class="card">
       <div style="padding:1rem;">
         <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Contact host" %}</h2>
-        <form id="contact-form" style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
+
+        {% if public_contact %}
+          <div class="card" style="padding:.8rem; margin-bottom:.8rem; display:grid; gap:.35rem;">
+            <div><strong>{% trans "Contact details" %}</strong></div>
+            {% if public_contact.phone %}
+              <div>{% trans "Phone" %}: <a href="tel:{{ public_contact.phone|urlencode }}">{{ public_contact.phone }}</a></div>
+            {% endif %}
+            {% if public_contact.email %}
+              <div>{% trans "Email" %}: <a href="mailto:{{ public_contact.email }}">{{ public_contact.email }}</a></div>
+            {% endif %}
+            {% if public_contact.whatsapp %}
+              <div>WhatsApp: <a href="https://wa.me/{{ public_contact.whatsapp|urlencode }}" target="_blank" rel="noopener">wa.me/{{ public_contact.whatsapp }}</a></div>
+            {% endif %}
+            {% if public_contact.telegram %}
+              <div>Telegram: <a href="https://t.me/{{ public_contact.telegram|urlencode }}" target="_blank" rel="noopener">@{{ public_contact.telegram }}</a></div>
+            {% endif %}
+            {% if public_contact.website %}
+              <div>{% trans "Website" %}: <a href="{{ public_contact.website }}" target="_blank" rel="noopener">{{ public_contact.website }}</a></div>
+            {% endif %}
+            {% if public_contact.hours %}
+              <div>{% trans "Available hours" %}: {{ public_contact.hours }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <form id="contact-form" data-prop-id="{{ property.pk|default:'' }}" style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
           <div>
             <label for="c_name">{% trans "Your name" %}</label>
             <input id="c_name" name="name" type="text" required>
@@ -149,7 +214,7 @@
             <textarea id="c_msg" name="message" rows="4" required></textarea>
           </div>
           <div style="grid-column:1/-1; display:flex; gap:.5rem; align-items:center;">
-            <button type="submit" class="btn btn-muted">{% trans "Send message" %}</button>
+            <button type="submit" class="btn btn-muted" {% if not property or not property.pk %}disabled{% endif %}>{% trans "Send message" %}</button>
             <span id="contact-status"></span>
           </div>
         </form>
@@ -172,7 +237,6 @@
 .lb-exit-active{opacity:0; transform:translateX(var(--dx,0)) scale(.98); transition:opacity .22s ease, transform .22s ease}
 </style>
 
-{# перевод, безопасный для вставки в JS #}
 {% trans "nights" as nights_label %}
 
 <script>
@@ -208,12 +272,14 @@
   function getCookie(name){var v="; "+document.cookie;var p=v.split("; "+name+"=");if(p.length===2)return p.pop().split(";").shift();}
   var form=document.getElementById("contact-form");
   if(!form)return;
+  var propId=form.getAttribute("data-prop-id")||"";
+  if(!propId)return;
   var status=document.getElementById("contact-status");
   form.addEventListener("submit",function(e){
     e.preventDefault();
     status.textContent="";
     var payload={name:document.getElementById("c_name").value.trim(),email:document.getElementById("c_email").value.trim(),phone:document.getElementById("c_phone").value.trim(),message:document.getElementById("c_msg").value.trim()};
-    fetch("/api/properties/{{ property.pk }}/contact/",{method:"POST",headers:{"Content-Type":"application/json","X-CSRFToken":getCookie("csrftoken")||""},body:JSON.stringify(payload),credentials:"same-origin"})
+    fetch("/api/properties/"+encodeURIComponent(propId)+"/contact/",{method:"POST",headers:{"Content-Type":"application/json","X-CSRFToken":getCookie("csrftoken")||""},body:JSON.stringify(payload),credentials:"same-origin"})
       .then(function(r){return r.json().then(function(j){return{ok:r.ok,data:j};});})
       .then(function(res){if(res.ok){status.className="";status.style.color="";status.textContent="{% trans 'Message sent' %}";form.reset();}else{status.style.color="";status.textContent=(res.data&&res.data.detail)||"{% trans 'Failed to send' %}";}})
       .catch(function(){status.style.color="";status.textContent="{% trans 'Failed to send' %}";});

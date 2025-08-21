@@ -202,7 +202,7 @@ class Command(BaseCommand):
                 sid = transaction.savepoint()
                 try:
                     room = Room()
-                    # FK -> Property
+
                     setattr(room, fk_room_to_property, prop)
 
                     # Имена/заголовки
@@ -213,10 +213,10 @@ class Command(BaseCommand):
                     elif _has_field(Room, "label"):
                         room.label = display_name
 
-                    # Тип комнаты
+
                     _set_choice_field(room, "room_type", [rtype, display_name, rtype.upper()])
 
-                    # Кол-во кроватей
+
                     if _has_field(Room, "beds"):
                         room.beds = int(beds)
 

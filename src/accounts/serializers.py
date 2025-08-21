@@ -1,21 +1,37 @@
 from rest_framework import serializers
-from .models import User
+from django.apps import apps
 
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
 
-    class Meta:
-        model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'role', 'password')
+def _get_model(name: str):
+    try:
+        return apps.get_model(apps.get_app_config("analytics").label, name)
+    except Exception:
+        return None
 
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'role')
+SearchQuery = _get_model("SearchQuery")
+ViewEvent = _get_model("ViewEvent")
+
+
+if SearchQuery:
+    class SearchQuerySerializer(serializers.ModelSerializer):
+        class Meta:
+            model = SearchQuery
+            fields = "__all__"
+else:
+    class SearchQuerySerializer(serializers.Serializer):
+        id = serializers.IntegerField(read_only=True)
+        query = serializers.CharField(required=False, allow_blank=True)
+        created_at = serializers.DateTimeField(required=False)
+
+
+if ViewEvent:
+    class ViewEventSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = ViewEvent
+            fields = "__all__"
+else:
+    class ViewEventSerializer(serializers.Serializer):
+        id = serializers.IntegerField(read_only=True)
+        path = serializers.CharField(required=False, allow_blank=True)
+        created_at = serializers.DateTimeField(required=False)

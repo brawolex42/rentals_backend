@@ -1,4 +1,4 @@
-# src/properties/management/commands/fix_missing_media.py
+
 import os
 from datetime import datetime
 from django.core.management.base import BaseCommand
@@ -39,13 +39,13 @@ def text_size(draw: "ImageDraw.ImageDraw", text: str, font: "ImageFont.ImageFont
     - Иначе: anchor="mm" без вычислений
     Возвращает (w,h) или None, если измерить нельзя.
     """
-    # Новые версии Pillow
+
     if hasattr(draw, "textbbox"):
         bbox = draw.textbbox((0, 0), text, font=font)
         w = bbox[2] - bbox[0]
         h = bbox[3] - bbox[1]
         return w, h
-    # Старые — нет надёжного textsize; вернём None и будем центрировать якорем
+
     return None
 
 
@@ -61,13 +61,13 @@ def draw_placeholder(text: str):
         y = (PLACEHOLDER_SIZE[1] - h) // 2
         draw.text((x, y), text, fill="#111111", font=font)
     else:
-        # Без измерений: центрирование через anchor="mm" (поддерживается даже в старых версиях)
+
         cx = PLACEHOLDER_SIZE[0] // 2
         cy = PLACEHOLDER_SIZE[1] // 2
         try:
             draw.text((cx, cy), text, fill="#111111", font=font, anchor="mm")
         except TypeError:
-            # Совсем старый Pillow без anchor — просто в треть экрана
+
             draw.text((PLACEHOLDER_SIZE[0] * 0.1, PLACEHOLDER_SIZE[1] * 0.45),
                       text, fill="#111111", font=font)
     return img
@@ -126,7 +126,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f"Готово. Недостающих: {missing}, создано файлов: {fixed}."))
 
-        # На случай объектов без вообще каких-либо связей с изображениями
+
         no_image_props = Property.objects.filter(images__isnull=True).order_by("id").distinct()
         created_links = 0
         for p in no_image_props:
