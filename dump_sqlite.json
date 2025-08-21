@@ -1,0 +1,1221 @@
+[
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$7TzGnpolywYFHHBLBMG8Cs$ypy0qgsEwOY9WqUsulpgZ7eVqBeCqQm4TpU745c3czU=",
+    "last_login": "2025-08-20T23:29:58.505Z",
+    "is_superuser": true,
+    "username": "Aleksandr",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-08-20T22:53:55.578Z",
+    "email": "sakilev.aleksandr@gmail.com",
+    "role": "TENANT",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 1,
+  "fields": {
+    "owner": 1,
+    "title": "Gemütliches Einfamilienhaus",
+    "description": "Schöne Unterkunft in München. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "München",
+    "district": "",
+    "price": "2100.00",
+    "rooms": 3,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 2,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Karlsruhe. 2 Zimmer. Sofort bezugsfertig.",
+    "city": "Karlsruhe",
+    "district": "",
+    "price": "2100.00",
+    "rooms": 2,
+    "property_type": "APARTMENT",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 3,
+  "fields": {
+    "owner": 1,
+    "title": "Gemütliches Einfamilienhaus",
+    "description": "Schöne Unterkunft in Köln. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Köln",
+    "district": "",
+    "price": "1200.00",
+    "rooms": 4,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 4,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Köln. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Köln",
+    "district": "",
+    "price": "850.00",
+    "rooms": 5,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 5,
+  "fields": {
+    "owner": 1,
+    "title": "Elegantes Apartment",
+    "description": "Schöne Unterkunft in Wiesbaden. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Wiesbaden",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 5,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 6,
+  "fields": {
+    "owner": 1,
+    "title": "Elegantes Apartment",
+    "description": "Schöne Unterkunft in Köln. 2 Zimmer. Sofort bezugsfertig.",
+    "city": "Köln",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 2,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 7,
+  "fields": {
+    "owner": 1,
+    "title": "Komfortables Apartment",
+    "description": "Schöne Unterkunft in Berlin. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Berlin",
+    "district": "",
+    "price": "990.00",
+    "rooms": 1,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 8,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Dresden. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Dresden",
+    "district": "",
+    "price": "1850.00",
+    "rooms": 4,
+    "property_type": "ROOM",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.530Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 9,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Hamburg. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Hamburg",
+    "district": "",
+    "price": "2400.00",
+    "rooms": 4,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.530Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 10,
+  "fields": {
+    "owner": 1,
+    "title": "Elegantes Apartment",
+    "description": "Schöne Unterkunft in Köln. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Köln",
+    "district": "",
+    "price": "2100.00",
+    "rooms": 3,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 11,
+  "fields": {
+    "owner": 1,
+    "title": "Gemütliches Einfamilienhaus",
+    "description": "Schöne Unterkunft in Hamburg. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Hamburg",
+    "district": "",
+    "price": "990.00",
+    "rooms": 4,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 12,
+  "fields": {
+    "owner": 1,
+    "title": "Modernes Studio",
+    "description": "Schöne Unterkunft in Essen. 2 Zimmer. Sofort bezugsfertig.",
+    "city": "Essen",
+    "district": "",
+    "price": "850.00",
+    "rooms": 2,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 13,
+  "fields": {
+    "owner": 1,
+    "title": "Gemütliches Einfamilienhaus",
+    "description": "Schöne Unterkunft in Köln. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Köln",
+    "district": "",
+    "price": "990.00",
+    "rooms": 1,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 14,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Nürnberg. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Nürnberg",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 3,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 15,
+  "fields": {
+    "owner": 1,
+    "title": "Elegantes Apartment",
+    "description": "Schöne Unterkunft in Wiesbaden. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Wiesbaden",
+    "district": "",
+    "price": "850.00",
+    "rooms": 5,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 16,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in München. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "München",
+    "district": "",
+    "price": "2400.00",
+    "rooms": 4,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 17,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Karlsruhe. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Karlsruhe",
+    "district": "",
+    "price": "1200.00",
+    "rooms": 5,
+    "property_type": "ROOM",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 18,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Hamburg. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Hamburg",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 3,
+    "property_type": "ROOM",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 19,
+  "fields": {
+    "owner": 1,
+    "title": "Gemütliches Einfamilienhaus",
+    "description": "Schöne Unterkunft in Dresden. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Dresden",
+    "district": "",
+    "price": "850.00",
+    "rooms": 3,
+    "property_type": "APARTMENT",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 20,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Düsseldorf. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Düsseldorf",
+    "district": "",
+    "price": "990.00",
+    "rooms": 3,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 21,
+  "fields": {
+    "owner": 1,
+    "title": "Modernes Studio",
+    "description": "Schöne Unterkunft in Stuttgart. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Stuttgart",
+    "district": "",
+    "price": "850.00",
+    "rooms": 5,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 22,
+  "fields": {
+    "owner": 1,
+    "title": "Modernes Studio",
+    "description": "Schöne Unterkunft in Stuttgart. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Stuttgart",
+    "district": "",
+    "price": "1200.00",
+    "rooms": 5,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 23,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in München. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "München",
+    "district": "",
+    "price": "1850.00",
+    "rooms": 1,
+    "property_type": "APARTMENT",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.531Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 24,
+  "fields": {
+    "owner": 1,
+    "title": "Komfortables Apartment",
+    "description": "Schöne Unterkunft in Frankfurt am Main. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Frankfurt am Main",
+    "district": "",
+    "price": "990.00",
+    "rooms": 1,
+    "property_type": "APARTMENT",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.531Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 25,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Köln. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Köln",
+    "district": "",
+    "price": "1680.00",
+    "rooms": 4,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 26,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Bremen. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Bremen",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 1,
+    "property_type": "APARTMENT",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 27,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Dortmund. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Dortmund",
+    "district": "",
+    "price": "1850.00",
+    "rooms": 3,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 28,
+  "fields": {
+    "owner": 1,
+    "title": "Elegantes Apartment",
+    "description": "Schöne Unterkunft in Hamburg. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Hamburg",
+    "district": "",
+    "price": "1680.00",
+    "rooms": 3,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 29,
+  "fields": {
+    "owner": 1,
+    "title": "Komfortables Apartment",
+    "description": "Schöne Unterkunft in Dortmund. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Dortmund",
+    "district": "",
+    "price": "1200.00",
+    "rooms": 4,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 30,
+  "fields": {
+    "owner": 1,
+    "title": "Helles Familienhaus",
+    "description": "Schöne Unterkunft in Essen. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Essen",
+    "district": "",
+    "price": "850.00",
+    "rooms": 1,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 31,
+  "fields": {
+    "owner": 1,
+    "title": "Modernes Studio",
+    "description": "Schöne Unterkunft in Bonn. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Bonn",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 4,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 32,
+  "fields": {
+    "owner": 1,
+    "title": "Helles Familienhaus",
+    "description": "Schöne Unterkunft in Leipzig. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Leipzig",
+    "district": "",
+    "price": "850.00",
+    "rooms": 1,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 33,
+  "fields": {
+    "owner": 1,
+    "title": "Ruhiges Reihenhaus",
+    "description": "Schöne Unterkunft in Hamburg. 1 Zimmer. Sofort bezugsfertig.",
+    "city": "Hamburg",
+    "district": "",
+    "price": "1850.00",
+    "rooms": 1,
+    "property_type": "APARTMENT",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 34,
+  "fields": {
+    "owner": 1,
+    "title": "Loft im Zentrum",
+    "description": "Schöne Unterkunft in Wiesbaden. 4 Zimmer. Sofort bezugsfertig.",
+    "city": "Wiesbaden",
+    "district": "",
+    "price": "1850.00",
+    "rooms": 4,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 35,
+  "fields": {
+    "owner": 1,
+    "title": "Gemütliches Einfamilienhaus",
+    "description": "Schöne Unterkunft in Stuttgart. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Stuttgart",
+    "district": "",
+    "price": "2100.00",
+    "rooms": 3,
+    "property_type": "ROOM",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 36,
+  "fields": {
+    "owner": 1,
+    "title": "Modernes Studio",
+    "description": "Schöne Unterkunft in Bonn. 2 Zimmer. Sofort bezugsfertig.",
+    "city": "Bonn",
+    "district": "",
+    "price": "1680.00",
+    "rooms": 2,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.532Z",
+    "updated_at": "2025-08-20T23:02:53.532Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 37,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Düsseldorf. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Düsseldorf",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 3,
+    "property_type": "VILLA",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.533Z",
+    "updated_at": "2025-08-20T23:02:53.533Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 38,
+  "fields": {
+    "owner": 1,
+    "title": "Charmantes Haus mit Garten",
+    "description": "Schöne Unterkunft in Augsburg. 2 Zimmer. Sofort bezugsfertig.",
+    "city": "Augsburg",
+    "district": "",
+    "price": "1200.00",
+    "rooms": 2,
+    "property_type": "HOUSE",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.533Z",
+    "updated_at": "2025-08-20T23:02:53.533Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 39,
+  "fields": {
+    "owner": 1,
+    "title": "Elegantes Apartment",
+    "description": "Schöne Unterkunft in Dresden. 5 Zimmer. Sofort bezugsfertig.",
+    "city": "Dresden",
+    "district": "",
+    "price": "1450.00",
+    "rooms": 5,
+    "property_type": "ROOM",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.533Z",
+    "updated_at": "2025-08-20T23:02:53.533Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 40,
+  "fields": {
+    "owner": 1,
+    "title": "Loft im Zentrum",
+    "description": "Schöne Unterkunft in Augsburg. 3 Zimmer. Sofort bezugsfertig.",
+    "city": "Augsburg",
+    "district": "",
+    "price": "1200.00",
+    "rooms": 3,
+    "property_type": "STUDIO",
+    "is_active": true,
+    "created_at": "2025-08-20T23:02:53.533Z",
+    "updated_at": "2025-08-20T23:02:53.533Z",
+    "views_count": 0,
+    "reviews_count": 0
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 1,
+  "fields": {
+    "property": 1,
+    "image": "properties/2025/08/21/seed_1_2664.jpg",
+    "alt": "Gemütliches Einfamilienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.553Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 2,
+  "fields": {
+    "property": 2,
+    "image": "properties/2025/08/21/seed_2_6874.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.560Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 3,
+  "fields": {
+    "property": 3,
+    "image": "properties/2025/08/21/seed_3_1695.jpg",
+    "alt": "Gemütliches Einfamilienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.565Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 4,
+  "fields": {
+    "property": 4,
+    "image": "properties/2025/08/21/seed_4_1177.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.571Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 5,
+  "fields": {
+    "property": 5,
+    "image": "properties/2025/08/21/seed_5_1353.jpg",
+    "alt": "Elegantes Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.577Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 6,
+  "fields": {
+    "property": 6,
+    "image": "properties/2025/08/21/seed_6_8491.jpg",
+    "alt": "Elegantes Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.583Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 7,
+  "fields": {
+    "property": 7,
+    "image": "properties/2025/08/21/seed_7_2805.jpg",
+    "alt": "Komfortables Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.589Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 8,
+  "fields": {
+    "property": 8,
+    "image": "properties/2025/08/21/seed_8_3964.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.595Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 9,
+  "fields": {
+    "property": 9,
+    "image": "properties/2025/08/21/seed_9_7405.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.601Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 10,
+  "fields": {
+    "property": 10,
+    "image": "properties/2025/08/21/seed_10_4405.jpg",
+    "alt": "Elegantes Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.607Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 11,
+  "fields": {
+    "property": 11,
+    "image": "properties/2025/08/21/seed_11_8802.jpg",
+    "alt": "Gemütliches Einfamilienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.613Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 12,
+  "fields": {
+    "property": 12,
+    "image": "properties/2025/08/21/seed_12_8475.jpg",
+    "alt": "Modernes Studio",
+    "uploaded_at": "2025-08-20T23:02:53.620Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 13,
+  "fields": {
+    "property": 13,
+    "image": "properties/2025/08/21/seed_13_1952.jpg",
+    "alt": "Gemütliches Einfamilienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.626Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 14,
+  "fields": {
+    "property": 14,
+    "image": "properties/2025/08/21/seed_14_4998.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.632Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 15,
+  "fields": {
+    "property": 15,
+    "image": "properties/2025/08/21/seed_15_8858.jpg",
+    "alt": "Elegantes Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.638Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 16,
+  "fields": {
+    "property": 16,
+    "image": "properties/2025/08/21/seed_16_1524.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.644Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 17,
+  "fields": {
+    "property": 17,
+    "image": "properties/2025/08/21/seed_17_8955.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.651Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 18,
+  "fields": {
+    "property": 18,
+    "image": "properties/2025/08/21/seed_18_6435.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.657Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 19,
+  "fields": {
+    "property": 19,
+    "image": "properties/2025/08/21/seed_19_9035.jpg",
+    "alt": "Gemütliches Einfamilienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.662Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 20,
+  "fields": {
+    "property": 20,
+    "image": "properties/2025/08/21/seed_20_1377.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.668Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 21,
+  "fields": {
+    "property": 21,
+    "image": "properties/2025/08/21/seed_21_6294.jpg",
+    "alt": "Modernes Studio",
+    "uploaded_at": "2025-08-20T23:02:53.674Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 22,
+  "fields": {
+    "property": 22,
+    "image": "properties/2025/08/21/seed_22_1389.jpg",
+    "alt": "Modernes Studio",
+    "uploaded_at": "2025-08-20T23:02:53.679Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 23,
+  "fields": {
+    "property": 23,
+    "image": "properties/2025/08/21/seed_23_1554.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.684Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 24,
+  "fields": {
+    "property": 24,
+    "image": "properties/2025/08/21/seed_24_5683.jpg",
+    "alt": "Komfortables Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.690Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 25,
+  "fields": {
+    "property": 25,
+    "image": "properties/2025/08/21/seed_25_8765.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.697Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 26,
+  "fields": {
+    "property": 26,
+    "image": "properties/2025/08/21/seed_26_5101.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.701Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 27,
+  "fields": {
+    "property": 27,
+    "image": "properties/2025/08/21/seed_27_9086.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.707Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 28,
+  "fields": {
+    "property": 28,
+    "image": "properties/2025/08/21/seed_28_4609.jpg",
+    "alt": "Elegantes Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.713Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 29,
+  "fields": {
+    "property": 29,
+    "image": "properties/2025/08/21/seed_29_2121.jpg",
+    "alt": "Komfortables Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.719Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 30,
+  "fields": {
+    "property": 30,
+    "image": "properties/2025/08/21/seed_30_3733.jpg",
+    "alt": "Helles Familienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.725Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 31,
+  "fields": {
+    "property": 31,
+    "image": "properties/2025/08/21/seed_31_9903.jpg",
+    "alt": "Modernes Studio",
+    "uploaded_at": "2025-08-20T23:02:53.730Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 32,
+  "fields": {
+    "property": 32,
+    "image": "properties/2025/08/21/seed_32_5498.jpg",
+    "alt": "Helles Familienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.735Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 33,
+  "fields": {
+    "property": 33,
+    "image": "properties/2025/08/21/seed_33_6066.jpg",
+    "alt": "Ruhiges Reihenhaus",
+    "uploaded_at": "2025-08-20T23:02:53.740Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 34,
+  "fields": {
+    "property": 34,
+    "image": "properties/2025/08/21/seed_34_8991.jpg",
+    "alt": "Loft im Zentrum",
+    "uploaded_at": "2025-08-20T23:02:53.745Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 35,
+  "fields": {
+    "property": 35,
+    "image": "properties/2025/08/21/seed_35_2130.jpg",
+    "alt": "Gemütliches Einfamilienhaus",
+    "uploaded_at": "2025-08-20T23:02:53.749Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 36,
+  "fields": {
+    "property": 36,
+    "image": "properties/2025/08/21/seed_36_9794.jpg",
+    "alt": "Modernes Studio",
+    "uploaded_at": "2025-08-20T23:02:53.754Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 37,
+  "fields": {
+    "property": 37,
+    "image": "properties/2025/08/21/seed_37_5597.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.759Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 38,
+  "fields": {
+    "property": 38,
+    "image": "properties/2025/08/21/seed_38_6922.jpg",
+    "alt": "Charmantes Haus mit Garten",
+    "uploaded_at": "2025-08-20T23:02:53.763Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 39,
+  "fields": {
+    "property": 39,
+    "image": "properties/2025/08/21/seed_39_5198.jpg",
+    "alt": "Elegantes Apartment",
+    "uploaded_at": "2025-08-20T23:02:53.767Z",
+    "address_line": ""
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 40,
+  "fields": {
+    "property": 40,
+    "image": "properties/2025/08/21/seed_40_2082.jpg",
+    "alt": "Loft im Zentrum",
+    "uploaded_at": "2025-08-20T23:02:53.772Z",
+    "address_line": ""
+  }
+}
+]

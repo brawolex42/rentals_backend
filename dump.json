@@ -1,0 +1,21 @@
+[
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$qS0cu4IEUbCHqR8WToORLL$l2pv4B1rXK8ximqg0zQtAhUWsdPp0qrKIIMprQ9nyn8=",
+    "last_login": "2025-08-21T07:41:35.647Z",
+    "is_superuser": true,
+    "username": "Aleksandr",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-08-21T07:40:56.970Z",
+    "email": "sakilev.aleksandr@gmail.com",
+    "role": "TENANT",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

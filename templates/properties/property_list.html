@@ -1,10 +1,12 @@
 {% extends "base.html" %}
-{% load i18n l10n %}
+{% load i18n l10n static %}
 {% block title %}{% trans "Cozy rental housing" %}{% endblock %}
+
 {% block content %}
 
 <section aria-label="hero" style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem;">
-  <div style="height: clamp(240px, 40vw, 420px); background: url('/media/properties/2025/08/19/pexels_47_453068.jpg') center/cover no-repeat;"></div>
+  <div style="height: clamp(240px, 40vw, 420px);
+              background: url('{% static 'real_images/hero_city.jpg' %}') center/cover no-repeat;"></div>
   <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.0) 20%, rgba(0,0,0,.55) 70%);"></div>
   <div style="position:absolute; inset:0; display:flex; align-items:flex-end;">
     <div style="padding:1rem; width:100%; color:#fff;">
@@ -66,18 +68,27 @@
           <a href="{% url 'property_detail' p.pk %}">
             {% with first=p.images.all.0 %}
               {% if first %}
-                <img src="{{ first.image.url }}" alt="{{ p.title }}" style="width:100%; height:180px; object-fit:cover;">
+                <img src="{{ first.image.url }}" alt="{{ p.title }}" loading="lazy"
+                     style="width:100%; height:180px; object-fit:cover;">
               {% else %}
-                <div style="width:100%; height:180px; display:flex; align-items:center; justify-content:center;">{% trans "No photo" %}</div>
+                <div style="width:100%; height:180px; display:flex; align-items:center; justify-content:center;">
+                  {% trans "No photo" %}
+                </div>
               {% endif %}
             {% endwith %}
           </a>
           <div style="position:absolute; top:8px; left:8px; display:flex; gap:.3rem; flex-wrap:wrap;">
-            <span class="badge" style="background:#111827; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">{% trans "7d" %}: {{ p.views_7d|default:"0" }}</span>
-            <span class="badge" style="background:#374151; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">{% trans "Total" %}: {{ p.views_total|default:"0" }}</span>
+            <span class="badge" style="background:#111827; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">
+              {% trans "7d" %}: {{ p.views_7d|default:"0" }}
+            </span>
+            <span class="badge" style="background:#374151; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">
+              {% trans "Total" %}: {{ p.views_total|default:"0" }}
+            </span>
           </div>
           <div style="padding:.8rem;">
-            <a href="{% url 'property_detail' p.pk %}" style="text-decoration:none;"><h3 style="margin:.1rem 0 .4rem; font-size:1rem; line-height:1.3;">{{ p.title }}</h3></a>
+            <a href="{% url 'property_detail' p.pk %}" style="text-decoration:none;">
+              <h3 style="margin:.1rem 0 .4rem; font-size:1rem; line-height:1.3;">{{ p.title }}</h3>
+            </a>
             <div class="muted" style="font-size:.9rem;">
               {% if p.city %}{{ p.city }}{% if p.display_district %}, {{ p.display_district }}{% endif %}{% endif %}
             </div>
@@ -107,5 +118,25 @@
     <div class="card" style="padding:1rem; text-align:center;">{% trans "Nothing found" %}</div>
   {% endif %}
 </section>
+
+{% if admin_contact %}
+  {% if admin_contact.email or admin_contact.phone or admin_contact.hours %}
+    <hr style="margin:2rem 0;">
+    <p class="muted" style="text-align:center; font-size:0.9rem;">
+      {% trans "Administrator contacts" %}:
+      {% if admin_contact.email %}
+        <a href="mailto:{% firstof admin_contact.email '' %}">{{ admin_contact.email }}</a>
+      {% endif %}
+      {% if admin_contact.phone %}
+        {% if admin_contact.email %} · {% endif %}
+        <a href="tel:{{ admin_contact.phone }}">{{ admin_contact.phone }}</a>
+      {% endif %}
+      {% if admin_contact.hours %}
+        {% if admin_contact.email or admin_contact.phone %} · {% endif %}
+        {{ admin_contact.hours }}
+      {% endif %}
+    </p>
+  {% endif %}
+{% endif %}
 
 {% endblock %}

@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{% extends "base.html" %}
+
+{% block title %}{% trans "Главная" %}{% endblock %}
+
+{% block content %}
+<div style="text-align:center; padding:2rem;">
+  <h1 style="margin-bottom:1rem;">
+    {% trans "Найдите уютное жильё" %}
+  </h1>
+  <p style="font-size:1.2rem; color:#555;">
+    {% trans "Просматривайте варианты, бронируйте онлайн и управляйте бронями в один клик." %}
+  </p>
+
+  <div style="margin-top:2rem;">
+    <a href="{% url 'properties:list' %}" 
+       style="display:inline-block; padding:0.8rem 1.5rem; background:#10b981; color:white; border-radius:8px; text-decoration:none;">
+      {% trans "Перейти к каталогу" %}
+    </a>
+  </div>
+</div>
+
+<hr style="margin:3rem 0;">
+
+<!-- Контакты администратора -->
+<p style="text-align:center; font-size:0.9rem; color:#555;">
+  {% trans "Контакты администратора" %}: 
+  <a href="mailto:admin@rentals.com">admin@rentals.com</a>, 
+  <a href="tel:+491601234567">+49 160 1234567</a>
+</p>
+{% endblock %}

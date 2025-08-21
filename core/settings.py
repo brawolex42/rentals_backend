@@ -7,9 +7,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env", override=False)
 load_dotenv(BASE_DIR / ".env.local", override=True)
 
+def as_bool(v: str, default=False) -> bool:
+    if v is None:
+        return default
+    return str(v).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+def as_list(v: str, sep=","):
+    if not v:
+        return []
+    return [x.strip() for x in str(v).split(sep) if x.strip()]
+
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-DEBUG = os.getenv("DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
+DEBUG = as_bool(os.getenv("DEBUG", "true"), default=True)
+ALLOWED_HOSTS = as_list(os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost"))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -42,13 +52,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-USE_WHITENOISE = os.getenv("USE_WHITENOISE", "false").lower() == "true"
+USE_WHITENOISE = as_bool(os.getenv("USE_WHITENOISE", "false"))
 if USE_WHITENOISE:
     try:
         import whitenoise  # noqa: F401
         MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
     except Exception:
-        USE_WHITENOISE = False  # пакет не установлен — не используем
+        USE_WHITENOISE = False
 
 ROOT_URLCONF = "core.urls"
 
@@ -64,6 +74,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "src.shared.context_processors.admin_contact",
             ],
         },
     },
@@ -88,9 +99,8 @@ REST_FRAMEWORK = {
 }
 
 IS_DOCKER = os.path.exists("/.dockerenv") or os.getenv("IN_DOCKER") == "1"
-DEFAULT_DB_HOST = "db" if IS_DOCKER else "127.0.0.1"
 
-if os.getenv("DB_USE_SQLITE", "false").lower() == "true":
+if as_bool(os.getenv("DB_USE_SQLITE", "false")):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -98,14 +108,22 @@ if os.getenv("DB_USE_SQLITE", "false").lower() == "true":
         }
     }
 else:
+    env_db_host = os.getenv("DB_HOST", None)
+    env_db_port = os.getenv("DB_PORT", "3306")
+    default_host = "db" if IS_DOCKER else "127.0.0.1"
+    if (not IS_DOCKER) and (env_db_host is None or env_db_host.strip().lower() == "db"):
+        resolved_host = "127.0.0.1"
+    else:
+        resolved_host = env_db_host.strip() if env_db_host else default_host
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
             "NAME": os.getenv("DB_NAME", "rentals"),
             "USER": os.getenv("DB_USER", "rentals"),
             "PASSWORD": os.getenv("DB_PASSWORD", "rentals123"),
-            "HOST": os.getenv("DB_HOST", DEFAULT_DB_HOST),
-            "PORT": os.getenv("DB_PORT", "3306"),
+            "HOST": resolved_host,
+            "PORT": env_db_port,
             "OPTIONS": {
                 "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
                 "charset": "utf8mb4",
@@ -119,7 +137,6 @@ LANGUAGES = [
     ("en", "English"),
 ]
 LOCALE_PATHS = [BASE_DIR / "locale"]
-
 LANGUAGE_COOKIE_NAME = "django_language"
 LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365
 LANGUAGE_COOKIE_SAMESITE = "Lax"
@@ -148,7 +165,7 @@ BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_TLS = as_bool(os.getenv("EMAIL_USE_TLS", "true"))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or "no-reply@example.com"

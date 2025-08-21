@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n l10n %}
+{% load i18n l10n static %}
 {% block title %}{{ property.title|default:_("Cozy rental housing") }}{% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
   <div style="
     height: clamp(220px, 38vw, 420px);
     background:
-      {% if first %}url('{{ first.image.url }}'){% else %}url('/media/properties/2025/08/19/pexels_47_453068.jpg'){% endif %}
+      {% if first %}url('{{ first.image.url }}'){% else %}url('{% static "real_images/hero_city.jpg" %}'){% endif %}
       center/cover no-repeat;">
   </div>
   <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.0) 20%, rgba(0,0,0,.55) 70%);"></div>
@@ -25,9 +25,9 @@
           </span>
         {% endif %}
         {% if property.price %}
-        <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
-          € {% localize on %}{{ property.price|floatformat:2 }}{% endlocalize %} / {% trans "month" %}
-        </span>
+          <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
+            € {% localize on %}{{ property.price|floatformat:2 }}{% endlocalize %} / {% trans "month" %}
+          </span>
         {% endif %}
         <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
           ⭐ {{ property.rating_avg|floatformat:1|default:"—" }} ({{ property.reviews_total|default:"0" }})
@@ -49,7 +49,7 @@
         <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Gallery" %}</h2>
         <div id="gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:.75rem;">
           {% for img in property.images.all %}
-            <img src="{{ img.image.url }}" alt="{{ property.title }}" style="width:100%; height:220px; object-fit:cover; border-radius:10px; cursor:pointer;" data-index="{{ forloop.counter0 }}">
+            <img src="{{ img.image.url }}" alt="{{ img.alt|default:property.title }}" style="width:100%; height:220px; object-fit:cover; border-radius:10px; cursor:pointer;" data-index="{{ forloop.counter0 }}">
           {% empty %}
             <div style="width:100%; height:220px; display:flex; align-items:center; justify-content:center;">{% trans "No photo" %}</div>
           {% endfor %}
@@ -60,7 +60,6 @@
     <article id="reviews" class="card">
       <div style="padding:1rem;">
         <h2 style="margin:0 0 .6rem; font-size:1.1rem;">{% trans "Reviews" %}</h2>
-
         {% if reviews %}
           <div style="display:grid; gap:.6rem; margin:0 0 1rem;">
             {% for r in reviews %}
@@ -179,7 +178,7 @@
               <div>{% trans "Phone" %}: <a href="tel:{{ public_contact.phone|urlencode }}">{{ public_contact.phone }}</a></div>
             {% endif %}
             {% if public_contact.email %}
-              <div>{% trans "Email" %}: <a href="mailto:{{ public_contact.email }}">{{ public_contact.email }}</a></div>
+              <div>{% trans "Email" %}: <a href="mailto:{% firstof public_contact.email '' %}">{{ public_contact.email }}</a></div>
             {% endif %}
             {% if public_contact.whatsapp %}
               <div>WhatsApp: <a href="https://wa.me/{{ public_contact.whatsapp|urlencode }}" target="_blank" rel="noopener">wa.me/{{ public_contact.whatsapp }}</a></div>

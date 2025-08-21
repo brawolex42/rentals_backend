@@ -10,6 +10,8 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import TemplateView, DetailView
 
+from django.contrib.auth import get_user_model
+
 from rest_framework import viewsets, permissions, status, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -111,6 +113,20 @@ def user_has_booking_for_property(user, prop):
     return qs.exists()
 
 
+def _get_admin_contact():
+    email = getattr(settings, "ADMIN_CONTACT_EMAIL", "") or ""
+    phone = getattr(settings, "ADMIN_CONTACT_PHONE", "") or ""
+    if not email:
+        try:
+            U = get_user_model()
+            admin = U.objects.filter(is_superuser=True).order_by("id").first()
+            if admin and admin.email:
+                email = admin.email
+        except Exception:
+            pass
+    return {"email": email, "phone": phone}
+
+
 class PublicCatalogView(TemplateView):
     template_name = "properties/property_list.html"
 
@@ -184,6 +200,7 @@ class PublicCatalogView(TemplateView):
             "properties": list(page_obj.object_list),
             "q": q, "city": city, "ptype": ptype, "sort": sort,
             "cities": cities, "ptypes": ptypes, "type_field": type_field,
+            "admin_contact": _get_admin_contact(),
         })
         return ctx
 
@@ -257,6 +274,7 @@ class PublicPropertyDetailView(DetailView):
             except Exception:
                 user_booking = None
         ctx["user_booking"] = user_booking
+        ctx["admin_contact"] = _get_admin_contact()
         return ctx
 
 

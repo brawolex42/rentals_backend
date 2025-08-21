@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.templatetags.static import static
 from src.shared.enums import PropertyType
 
 
@@ -34,6 +35,20 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.title} — {self.city}"
+
+    @property
+    def cover(self):
+        return self.images.order_by('id').first()
+
+    @property
+    def cover_url(self):
+        img = self.cover
+        if img and getattr(img, 'image', None):
+            try:
+                return img.image.url
+            except Exception:
+                pass
+        return static('img/no-photo.svg')
 
 
 class PropertyImage(models.Model):
