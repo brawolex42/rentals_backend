@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "src.shared.middleware.QueryStringLanguageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -55,7 +56,7 @@ MIDDLEWARE = [
 USE_WHITENOISE = as_bool(os.getenv("USE_WHITENOISE", "false"))
 if USE_WHITENOISE:
     try:
-        import whitenoise  # noqa: F401
+        import whitenoise
         MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
     except Exception:
         USE_WHITENOISE = False
@@ -148,7 +149,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "src" / "shared"]
+STATICFILES_DIRS = [BASE_DIR / "src/static", BASE_DIR / "src" / "shared"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 if USE_WHITENOISE and not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

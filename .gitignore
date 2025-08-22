@@ -11,6 +11,7 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+*.iml
 
 # OS
 .DS_Store
@@ -29,13 +30,44 @@ venv/
 # Django
 db.sqlite3
 identifier.sqlite
+*.sqlite3
+*.sqlite
 staticfiles/
 media/
 
-# Node/yarn (на всякий случай)
+# Locale binaries
+locale/**/LC_MESSAGES/*.mo
+
+# Data dumps & seeds
+dump*.json
+*.dump
+*.sql
+
+# Project assets (large/demo)
+src/shared/real_images/
+src/static/real_images/
+src/properties/seed_images/
+seed_images/
+
+# Node/yarn
 node_modules/
 
 # Tests/coverage
 .pytest_cache/
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
+
+# Caches/tools
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.tox/
+.cache/
+.ipynb_checkpoints/
+
+# Build artifacts
+dist/
+build/
+.eggs/

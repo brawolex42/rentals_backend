@@ -4,31 +4,31 @@
 
 {% block content %}
 
-<section aria-label="hero" style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 1rem;">
-  <div style="height: clamp(240px, 40vw, 420px);
+<section aria-label="hero" style="position:relative; border-radius:14px; overflow:hidden; margin:0 0 .75rem;">
+  <div style="height: clamp(200px, 36vw, 380px);
               background: url('{% static 'real_images/hero_city.jpg' %}') center/cover no-repeat;"></div>
   <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.0) 20%, rgba(0,0,0,.55) 70%);"></div>
   <div style="position:absolute; inset:0; display:flex; align-items:flex-end;">
-    <div style="padding:1rem; width:100%; color:#fff;">
-      <h1 style="margin:0 0 .35rem; font-weight:700; font-size:clamp(22px,4vw,36px); line-height:1.2;">
+    <div style="padding:.75rem; width:100%; color:#fff;">
+      <h1 style="margin:0 0 .25rem; font-weight:700; font-size:clamp(20px,3.6vw,32px); line-height:1.2;">
         {% trans "Cozy rental housing" %}
       </h1>
-      <p style="margin:.1rem 0 0; opacity:.95;">
+      <p style="margin:.05rem 0 0; opacity:.95; font-size:.95rem;">
         {% trans "Browse listings, book online, and manage bookings in one click." %}
       </p>
     </div>
   </div>
 </section>
 
-<section class="card" style="margin-bottom:1rem;">
-  <div style="padding:1rem;">
-    <form method="get" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr auto; gap:.6rem; align-items:end;">
+<section class="card" style="margin-bottom:.75rem;">
+  <div style="padding:.75rem;">
+    <form class="form-compact" method="get" style="display:grid; grid-template-columns:1.6fr .9fr .9fr .9fr .9fr 1.1fr auto; gap:.4rem; align-items:end;">
       <div>
-        <label for="q">{% trans "Search" %}</label>
+        <label for="q" style="font-size:.85rem;">{% trans "Search" %}</label>
         <input id="q" type="text" name="q" value="{{ q }}" placeholder="{% trans 'City, district, title...' %}">
       </div>
       <div>
-        <label for="city">{% trans "City" %}</label>
+        <label for="city" style="font-size:.85rem;">{% trans "City" %}</label>
         <select id="city" name="city">
           <option value="">{% trans "Any" %}</option>
           {% for c in cities %}
@@ -37,7 +37,7 @@
         </select>
       </div>
       <div>
-        <label for="ptype">{% trans "Type" %}</label>
+        <label for="ptype" style="font-size:.85rem;">{% trans "Type" %}</label>
         <select id="ptype" name="ptype" {% if not type_field %}disabled{% endif %}>
           <option value="">{% trans "Any" %}</option>
           {% for t in ptypes %}
@@ -46,15 +46,15 @@
         </select>
       </div>
       <div>
-        <label for="postal">{% trans "Postal code" %}</label>
+        <label for="postal" style="font-size:.85rem;">{% trans "Postal code" %}</label>
         <input id="postal" type="text" name="postal" value="{{ postal }}" placeholder="10117">
       </div>
       <div>
-        <label for="address">{% trans "Address" %}</label>
+        <label for="address" style="font-size:.85rem;">{% trans "Address" %}</label>
         <input id="address" type="text" name="address" value="{{ address }}" placeholder="{% trans 'Street, house…' %}">
       </div>
       <div>
-        <label for="sort">{% trans "Sort" %}</label>
+        <label for="sort" style="font-size:.85rem;">{% trans "Sort" %}</label>
         <select id="sort" name="sort">
           <option value="" {% if not sort %}selected{% endif %}>{% trans "Best rated" %}</option>
           <option value="views7" {% if sort == "views7" %}selected{% endif %}>{% trans "Views (7d)" %}</option>
@@ -62,79 +62,77 @@
         </select>
       </div>
       <div>
-        <button class="btn btn-primary" type="submit" style="min-width:140px;">{% trans "Search" %}</button>
+        <label class="spacer-label" style="visibility:hidden; display:block; font-size:.85rem;">&nbsp;</label>
+        <button class="btn btn-primary btn-sm" type="submit">{% trans "Search" %}</button>
       </div>
     </form>
   </div>
 </section>
 
-<section style="display:grid; gap:1rem;">
+<section style="display:grid; gap:.8rem;">
   {% if properties %}
-    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1rem;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:.8rem;">
       {% for p in properties %}
         <article class="card" style="overflow:hidden; position:relative;">
           <a href="{% url 'property_detail' p.pk %}">
             {% with first=p.images.all.0 %}
               {% if first %}
                 <img src="{{ first.image.url }}" alt="{{ p.title }}" loading="lazy"
-                     style="width:100%; height:180px; object-fit:cover;">
+                     style="width:100%; height:170px; object-fit:cover;">
               {% else %}
-                <div style="width:100%; height:180px; display:flex; align-items:center; justify-content:center;">
+                <div style="width:100%; height:170px; display:flex; align-items:center; justify-content:center;">
                   {% trans "No photo" %}
                 </div>
               {% endif %}
             {% endwith %}
           </a>
           <div style="position:absolute; top:8px; left:8px; display:flex; gap:.3rem; flex-wrap:wrap;">
-            <span class="badge" style="background:#111827; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">
-              {% trans "7d" %}: {{ p.views_7d|default:"0" }}
-            </span>
-            <span class="badge" style="background:#374151; color:#fff; padding:.2rem .5rem; border-radius:.5rem; font-size:.8rem;">
+            <span class="badge" style="background:#374151; color:#fff; padding:.15rem .45rem; border-radius:.5rem; font-size:.78rem;">
               {% trans "Total" %}: {{ p.views_total|default:"0" }}
             </span>
           </div>
-          <div style="padding:.8rem;">
+          <div style="padding:.65rem;">
             <a href="{% url 'property_detail' p.pk %}" style="text-decoration:none;">
-              <h3 style="margin:.1rem 0 .4rem; font-size:1rem; line-height:1.3;">{{ p.title }}</h3>
+              <h3 style="margin:.05rem 0 .3rem; font-size:.95rem; line-height:1.3;">{{ p.title }}</h3>
             </a>
-            <div class="muted" style="font-size:.9rem;">
+            <div class="muted" style="font-size:.86rem;">
               {% if p.city %}{{ p.city }}{% if p.display_district %}, {{ p.display_district }}{% endif %}{% endif %}
             </div>
             {% if p.address_line or p.postal_code %}
-              <div class="muted" style="font-size:.9rem;">
+              <div class="muted" style="font-size:.86rem;">
                 {% if p.address_line %}{{ p.address_line }}{% endif %}{% if p.address_line and p.postal_code %}, {% endif %}{% if p.postal_code %}{{ p.postal_code }}{% endif %}
               </div>
             {% endif %}
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:.4rem;">
-              <div class="price">€ {% localize on %}{{ p.price|floatformat:2 }}{% endlocalize %}</div>
-              <div class="rating">⭐ {{ p.rating_avg|floatformat:1|default:"—" }} ({{ p.reviews_total|default:"0" }})</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:.35rem;">
+              <div class="price" style="font-size:.98rem;">€ {% localize on %}{{ p.price|floatformat:2 }}{% endlocalize %}</div>
+              <div class="rating" style="font-size:.9rem;">⭐ {{ p.rating_avg|floatformat:1|default:"—" }} ({{ p.reviews_total|default:"0" }})</div>
             </div>
           </div>
         </article>
       {% endfor %}
     </div>
 
-    <div style="display:flex; justify-content:center; align-items:center; gap:.4rem; margin-top:1rem;">
+    <div style="display:flex; justify-content:center; align-items:center; gap:.35rem; margin-top:.8rem;">
       {% if page_obj.has_previous %}
-        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&postal={{ postal }}&address={{ address }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">{% trans "Prev" %}</a>
+        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&postal={{ postal }}&address={{ address }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}" style="padding:.35rem .6rem; font-size:.95rem;">{% trans "Prev" %}</a>
       {% else %}
-        <button class="btn btn-muted" disabled>{% trans "Prev" %}</button>
+        <button class="btn btn-muted" disabled style="padding:.35rem .6rem; font-size:.95rem;">{% trans "Prev" %}</button>
       {% endif %}
-      <span class="muted" style="padding:0 .5rem;">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      <span class="muted" style="padding:0 .4rem; font-size:.95rem;">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
       {% if page_obj.has_next %}
-        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&postal={{ postal }}&address={{ address }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&postal={{ postal }}&address={{ address }}&sort={{ sort }}&page={{ page_obj.next_page_number }}" style="padding:.35rem .6rem; font-size:.95rem;">{% trans "Next" %}</a>
       {% else %}
-        <button class="btn btn-muted" disabled>{% trans "Next" %}</button>
+        <button class="btn btn-muted" disabled style="padding:.35rem .6rem; font-size:.95rem;">{% trans "Next" %}</button>
       {% endif %}
     </div>
   {% else %}
-    <div class="card" style="padding:1rem; text-align:center;">{% trans "Nothing found" %}</div>
+    <div class="card" style="padding:.8rem; text-align:center; font-size:.95rem;">{% trans "Nothing found" %}</div>
   {% endif %}
 </section>
 
 {% if admin_contact %}
   {% if admin_contact.email or admin_contact.phone or admin_contact.hours %}
-    <hr style="margin:2rem 0;">
+    <hr style="margin:1.2rem 0;">
     <p class="muted" style="text-align:center; font-size:0.9rem;">
       {% trans "Administrator contacts" %}:
       {% if admin_contact.email %}
