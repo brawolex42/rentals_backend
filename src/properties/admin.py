@@ -54,3 +54,15 @@ if ViewEvent:
             else ("timestamp" if has_field(ViewEvent, "timestamp") else None)
         )
     admin.site.register(ViewEvent, ViewEventAdmin)
+
+try:
+    from src.properties.models import Property
+
+    @admin.register(Property)
+    class PropertyAdmin(admin.ModelAdmin):
+        list_display = ("id", "title", "city", "postal_code", "address_line", "price", "rooms", "property_type", "is_active", "created_at")
+        search_fields = ("title", "city", "district", "address_line", "postal_code")
+        list_filter = ("city", "property_type", "is_active")
+        ordering = ("-created_at",)
+except Exception:
+    pass

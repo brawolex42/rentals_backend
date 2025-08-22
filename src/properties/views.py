@@ -16,10 +16,13 @@ from rest_framework import viewsets, permissions, status, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters as drf_filters
 
 from .models import Property
 from .serializers import PropertySerializer
 from .permissions import IsOwnerOrReadOnly
+from .filters import PropertyFilter
 
 try:
     from src.analytics.models import ViewEvent
@@ -136,6 +139,8 @@ class PublicCatalogView(TemplateView):
         city = (self.request.GET.get("city") or "").strip()
         ptype = (self.request.GET.get("ptype") or "").strip()
         sort = (self.request.GET.get("sort") or "").strip()
+        postal = (self.request.GET.get("postal") or "").strip()
+        address = (self.request.GET.get("address") or "").strip()
         type_field = _detect_type_field()
 
         qs = Property.objects.all().annotate(
@@ -156,7 +161,13 @@ class PublicCatalogView(TemplateView):
                 | Q(description__icontains=q)
                 | Q(city__icontains=q)
                 | Q(district__icontains=q)
+                | Q(address_line__icontains=q)
+                | Q(postal_code__icontains=q)
             )
+        if address:
+            qs = qs.filter(address_line__icontains=address)
+        if postal:
+            qs = qs.filter(postal_code__iexact=postal)
         if city:
             qs = qs.filter(city__iexact=city)
         if ptype and type_field:
@@ -199,6 +210,7 @@ class PublicCatalogView(TemplateView):
             "page_obj": page_obj,
             "properties": list(page_obj.object_list),
             "q": q, "city": city, "ptype": ptype, "sort": sort,
+            "postal": postal, "address": address,
             "cities": cities, "ptypes": ptypes, "type_field": type_field,
             "admin_contact": _get_admin_contact(),
         })
@@ -286,7 +298,9 @@ class PropertyViewSet(viewsets.ModelViewSet):
     )
     serializer_class = PropertySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    search_fields = ["title", "description", "city", "district"]
+    filter_backends = (DjangoFilterBackend, drf_filters.SearchFilter, drf_filters.OrderingFilter)
+    filterset_class = PropertyFilter
+    search_fields = ["title", "description", "city", "district", "address_line", "postal_code"]
     ordering_fields = ["price", "created_at", "rating_avg", "reviews_total", "id"]
 
     def perform_create(self, serializer):

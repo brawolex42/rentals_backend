@@ -24,6 +24,11 @@
             {{ property.city }}{% if property.display_district %}, {{ property.display_district }}{% endif %}
           </span>
         {% endif %}
+        {% if property.address_line or property.postal_code %}
+          <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
+            {% if property.address_line %}{{ property.address_line }}{% endif %}{% if property.address_line and property.postal_code %}, {% endif %}{% if property.postal_code %}{{ property.postal_code }}{% endif %}
+          </span>
+        {% endif %}
         {% if property.price %}
           <span style="background:rgba(0,0,0,.35); padding:.2rem .5rem; border-radius:.5rem;">
             € {% localize on %}{{ property.price|floatformat:2 }}{% endlocalize %} / {% trans "month" %}
@@ -268,7 +273,11 @@
   }
 })();
 (function(){
-  function getCookie(name){var v="; "+document.cookie;var p=v.split("; "+name+"=");if(p.length===2)return p.pop().split(";").shift();}
+  function getCookie(name){
+    var v="; "+document.cookie;
+    var p=v.split("; "+name+"=");
+    if(p.length===2) return p.pop().split(";").shift();
+  }
   var form=document.getElementById("contact-form");
   if(!form)return;
   var propId=form.getAttribute("data-prop-id")||"";

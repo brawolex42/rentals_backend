@@ -14,6 +14,8 @@ class Property(models.Model):
     description = models.TextField()
     city = models.CharField(max_length=120)
     district = models.CharField(max_length=120, blank=True, null=True)
+    address_line = models.CharField(max_length=255, blank=True, default='')
+    postal_code = models.CharField(max_length=10, blank=True, default='')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     rooms = models.PositiveIntegerField()
     property_type = models.CharField(max_length=20, choices=PropertyType.choices)

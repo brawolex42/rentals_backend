@@ -22,7 +22,7 @@
 
 <section class="card" style="margin-bottom:1rem;">
   <div style="padding:1rem;">
-    <form method="get" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:.6rem; align-items:end;">
+    <form method="get" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr auto; gap:.6rem; align-items:end;">
       <div>
         <label for="q">{% trans "Search" %}</label>
         <input id="q" type="text" name="q" value="{{ q }}" placeholder="{% trans 'City, district, title...' %}">
@@ -44,6 +44,14 @@
             <option value="{{ t }}" {% if t == ptype %}selected{% endif %}>{{ t }}</option>
           {% endfor %}
         </select>
+      </div>
+      <div>
+        <label for="postal">{% trans "Postal code" %}</label>
+        <input id="postal" type="text" name="postal" value="{{ postal }}" placeholder="10117">
+      </div>
+      <div>
+        <label for="address">{% trans "Address" %}</label>
+        <input id="address" type="text" name="address" value="{{ address }}" placeholder="{% trans 'Street, house…' %}">
       </div>
       <div>
         <label for="sort">{% trans "Sort" %}</label>
@@ -92,6 +100,11 @@
             <div class="muted" style="font-size:.9rem;">
               {% if p.city %}{{ p.city }}{% if p.display_district %}, {{ p.display_district }}{% endif %}{% endif %}
             </div>
+            {% if p.address_line or p.postal_code %}
+              <div class="muted" style="font-size:.9rem;">
+                {% if p.address_line %}{{ p.address_line }}{% endif %}{% if p.address_line and p.postal_code %}, {% endif %}{% if p.postal_code %}{{ p.postal_code }}{% endif %}
+              </div>
+            {% endif %}
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:.4rem;">
               <div class="price">€ {% localize on %}{{ p.price|floatformat:2 }}{% endlocalize %}</div>
               <div class="rating">⭐ {{ p.rating_avg|floatformat:1|default:"—" }} ({{ p.reviews_total|default:"0" }})</div>
@@ -103,13 +116,13 @@
 
     <div style="display:flex; justify-content:center; align-items:center; gap:.4rem; margin-top:1rem;">
       {% if page_obj.has_previous %}
-        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">{% trans "Prev" %}</a>
+        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&postal={{ postal }}&address={{ address }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">{% trans "Prev" %}</a>
       {% else %}
         <button class="btn btn-muted" disabled>{% trans "Prev" %}</button>
       {% endif %}
       <span class="muted" style="padding:0 .5rem;">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
       {% if page_obj.has_next %}
-        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+        <a class="btn btn-muted" href="?q={{ q }}&city={{ city }}&ptype={{ ptype }}&postal={{ postal }}&address={{ address }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
       {% else %}
         <button class="btn btn-muted" disabled>{% trans "Next" %}</button>
       {% endif %}

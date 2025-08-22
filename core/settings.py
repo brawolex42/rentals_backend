@@ -135,6 +135,7 @@ LANGUAGE_CODE = "de"
 LANGUAGES = [
     ("de", "Deutsch"),
     ("en", "English"),
+    ("ru", "Русский"),
 ]
 LOCALE_PATHS = [BASE_DIR / "locale"]
 LANGUAGE_COOKIE_NAME = "django_language"

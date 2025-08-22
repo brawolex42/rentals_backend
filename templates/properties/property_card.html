@@ -9,20 +9,19 @@
     <h3 style="margin:0; font-size:1.1rem; font-weight:600;">
       {{ property.city }}: {{ property.rooms }}-room
     </h3>
-    <p style="margin:0; color:#6b7280;">{{ property.address_line }}</p>
+    {% if property.address_line or property.postal_code %}
+      <p style="margin:0; color:#6b7280;">
+        {% if property.address_line %}{{ property.address_line }}{% endif %}{% if property.address_line and property.postal_code %}, {% endif %}{% if property.postal_code %}{{ property.postal_code }}{% endif %}
+      </p>
+    {% endif %}
     <p style="margin:0; font-weight:600;">€ {{ property.price }},00</p>
     <p style="margin:0; color:#6b7280;">
       ⭐ {% if property.avg_rating %} {{ property.avg_rating|floatformat:1 }} ({{ property.reviews_count }}) {% else %} — (0) {% endif %}
     </p>
 
     <div style="margin-top:auto; display:flex; flex-wrap:wrap; gap:.3rem;">
-      <!-- Кнопка на страницу -->
       <a href="{% url 'property_detail' property.id %}" class="btn btn-primary">{% trans "View" %}</a>
-
-      <!-- Кнопка бронирования -->
       <a href="#book" class="btn btn-danger">{% trans "Book now" %}</a>
-
-      <!-- Кнопка связаться -->
       <a href="{% url 'contact_host' property.id %}" class="btn btn-muted">{% trans "Contact host" %}</a>
     </div>
   </div>
