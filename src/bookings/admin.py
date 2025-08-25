@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.core.exceptions import ValidationError
 
 from .models import Booking
 from src.shared.enums import BookingStatus
@@ -16,12 +17,15 @@ from src.shared.enums import BookingStatus
 class BookingAdmin(admin.ModelAdmin):
     list_display = (
         'id','property','tenant','start_date','end_date','status',
-        'cancelled_by','created_at','admin_actions',
+        'cancelled_by','created_at','checkout_confirmed_at','admin_actions',
     )
     list_filter = ('status','start_date','end_date','created_at','cancelled_by')
     search_fields = ('property__title','tenant__username','tenant__email')
-    actions = ('send_to_owner','cancel_selected')
-    readonly_fields = ('email_preview','checkout_confirmed_at','cancelled_at','cancelled_by','status_updated_at','created_at')
+    actions = ('send_to_owner','cancel_selected','confirm_checkout_selected')
+    readonly_fields = (
+        'email_preview','checkout_confirmed_at',
+        'cancelled_at','cancelled_by','status_updated_at','created_at'
+    )
     change_form_template = "admin/bookings/booking/change_form.html"
     list_select_related = ('property','tenant','property__owner')
     date_hierarchy = 'created_at'
@@ -52,6 +56,18 @@ class BookingAdmin(admin.ModelAdmin):
             changed += 1
         self.message_user(request, f'Отменено броней: {changed}', level=messages.SUCCESS)
     cancel_selected.short_description = 'Отменить выбранные брони'
+
+    def confirm_checkout_selected(self, request, queryset):
+        updated = 0
+        for b in queryset:
+            try:
+                b.confirm_checkout(by_user=request.user)
+                updated += 1
+            except ValidationError as e:
+                self.message_user(request, f"Booking #{b.id}: {e}", level=messages.WARNING)
+        if updated:
+            self.message_user(request, f"Подтверждён выезд у {updated} бронирований.", level=messages.SUCCESS)
+    confirm_checkout_selected.short_description = "Подтвердить выезд"
 
     def _send_owner_email(self, request, booking: Booking) -> bool:
         owner = getattr(booking.property, 'owner', None)
@@ -125,10 +141,14 @@ class BookingAdmin(admin.ModelAdmin):
         try:
             send_url = reverse('admin:bookings_booking_send_owner_email', args=[obj.pk])
             cancel_btn = ''
+            checkout_btn = ''
             if obj.status not in (getattr(BookingStatus, "CANCELLED", None), getattr(BookingStatus, "COMPLETED", None)):
                 cancel_url = reverse('admin:bookings_booking_cancel', args=[obj.pk])
                 cancel_btn = f'<a class="button" style="background:#ef4444;color:#fff" href="{cancel_url}">Отменить</a>'
-            return mark_safe(f'<a class="button" href="{send_url}">Письмо</a> {cancel_btn}')
+            if not obj.checkout_confirmed_at:
+                checkout_url = reverse('admin:bookings_booking_checkout', args=[obj.pk])
+                checkout_btn = f'<a class="button" style="background:#10b981;color:#fff" href="{checkout_url}">Выезд</a>'
+            return mark_safe(f'<a class="button" href="{send_url}">Письмо</a> {cancel_btn} {checkout_btn}')
         except Exception:
             return '-'
     admin_actions.short_description = "Действия"
@@ -146,6 +166,11 @@ class BookingAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.cancel_booking_view),
                 name='bookings_booking_cancel',
             ),
+            path(
+                '<path:object_id>/checkout/',
+                self.admin_site.admin_view(self.confirm_checkout_view),
+                name='bookings_booking_checkout',
+            ),
         ]
         return custom + urls
 
@@ -160,4 +185,13 @@ class BookingAdmin(admin.ModelAdmin):
         booking = get_object_or_404(Booking.objects.select_related('property__owner','tenant'), pk=object_id)
         if self._cancel_booking(request, booking, actor="ADMIN"):
             self.message_user(request, f'Бронь #{booking.pk} отменена.', messages.SUCCESS)
+        return redirect(reverse('admin:bookings_booking_change', args=[booking.pk]))
+
+    def confirm_checkout_view(self, request, object_id: str):
+        booking = get_object_or_404(Booking.objects.select_related('property__owner','tenant'), pk=object_id)
+        try:
+            booking.confirm_checkout(by_user=request.user)
+            self.message_user(request, f'Выезд по брони #{booking.pk} подтверждён.', messages.SUCCESS)
+        except ValidationError as e:
+            self.message_user(request, f'Ошибка: {e}', messages.WARNING)
         return redirect(reverse('admin:bookings_booking_change', args=[booking.pk]))

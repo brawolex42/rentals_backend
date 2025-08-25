@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from src.properties.models import Property
 from src.shared.enums import BookingStatus
 
-
 class Booking(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='bookings')
     tenant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookings')
@@ -107,3 +106,19 @@ class Booking(models.Model):
         self.status = BookingStatus.CANCELLED
         self.save(update_fields=["cancelled_at", "cancelled_by", "status", "status_updated_at"])
         return True, _("Booking cancelled successfully.")
+
+    def can_confirm_checkout(self) -> bool:
+        if self.is_cancelled:
+            return False
+        return self.checkout_confirmed_at is None
+
+    def confirm_checkout(self, by_user=None):
+        if not self.can_confirm_checkout():
+            raise ValidationError(_("Checkout has already been confirmed or booking is cancelled."))
+        self.checkout_confirmed_at = timezone.now()
+        try:
+            if hasattr(BookingStatus, "COMPLETED"):
+                self.status = BookingStatus.COMPLETED
+        except Exception:
+            pass
+        self.save(update_fields=["checkout_confirmed_at", "status", "status_updated_at"])
